@@ -45,10 +45,12 @@ var productSchema = new mongoose.Schema({
   city: String,
   phno: Number,
   dob: String,
-  //category : [{ 'abd': Number , }]
+  role: String,
+  status: String,
+  visibility: Boolean,
 });
 
-var user = mongoose.model('users', productSchema);
+var user = mongoose.model('userdetails', productSchema);
 
 app.get('/', function (req, res) {
   res.redirect('login.html')
@@ -78,6 +80,16 @@ app.post('/login', function (req, res) {
     })
 })
 
+app.get('/adduser',function(req,res){
+  if(req.session.islogin)
+  {
+    res.render('loginpage');
+  }
+  else
+  {
+    res.redirect('login.html')
+  }
+})
 app.post('/adduser', function (req, res) {
   //console.log(req.body);
   let newuser = new user({
@@ -88,6 +100,9 @@ app.post('/adduser', function (req, res) {
     city: req.body.city,
     phno: req.body.phone,
     dob: req.body.dob,
+    visibility: true,
+    role: req.body.role,
+    status: "pending",
   })
   newuser.save()
     .then(data => {
@@ -101,6 +116,10 @@ app.post('/adduser', function (req, res) {
 })
 
 app.get('/home', function (req, res) {
+  if(!req.session.islogin)
+  {
+    res.redirect('/login.html');
+  }
   user.find({
       "name": req.session.name,
       "email": req.session.email
