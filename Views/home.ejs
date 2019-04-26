@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Profile</title>
+</head>
+<style>
+  .user-details-panel {
+    
+    border-width: 1px;
+    width: 500px;
+    height: 80px;
+    margin: 25px 20px 25px 20px;
+  }
+
+  .panel-heading {
+    background-color: rgb(167, 167, 167);
+    padding: 5px;
+    height: 30px;
+  }
+
+  .panel-body {
+    background-color: rgb(240, 240, 240);
+    padding: 5px;
+    height: 30px;
+  }
+
+</style>
+
+<body>
+  <table class="table">
+    <tr >
+      <td >
+          <img src="me.jpeg" height="130px" width="130px" hspace="20px">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="user-details-panel">
+            <div class="panel-panel-default">
+              <div class="panel-heading">Name</div>
+              <div class="panel-body"><%= user.name%></div>
+            </div>
+        </div>
+    </td>
+    <td>
+        <div class="user-details-panel">
+            <div class="panel panel-default">
+              <div class="panel-heading">Email</div>
+              <div class="panel-body"><%= user.email%></div>
+            </div>
+        </div>
+    </td>
+    </tr>
+    <tr>
+        <td>
+          <div class="user-details-panel">
+              <div class="panel-panel-default">
+                <div class="panel-heading">Gender</div>
+                <div class="panel-body"><%= user.gender%></div>
+              </div>
+          </div>
+      </td>
+      <td>
+          <div class="user-details-panel">
+              <div class="panel panel-default">
+                <div class="panel-heading">City</div>
+                <div class="panel-body"><%= user.city%></div>
+              </div>
+          </div>
+      </td>
+      </tr>
+      <tr>
+          <td>
+            <div class="user-details-panel">
+                <div class="panel-panel-default">
+                  <div class="panel-heading">Phone No</div>
+                  <div class="panel-body"><%= user.phno%></div>
+                </div>
+            </div>
+        </td>
+        <td>
+            <div class="user-details-panel">
+                <div class="panel panel-default">
+                  <div class="panel-heading">D.O.B</div>
+                  <div class="panel-body"><%= user.dob%></div>
+                </div>
+            </div>
+        </td>
+        </tr>
+  </table>
+</body>
+
+</html>
