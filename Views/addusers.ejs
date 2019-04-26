@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Adding user</title>
+</head>
+<style>
+    input {
+        padding: 10px;
+        margin: 10px 15px 10px 0px;
+        width: 450px;
+        height: 15px;
+    }
+
+    .loginwindow {
+        width: 39%;
+        border-width: 1px;
+        background-color: rgb(236, 229, 219);
+        margin: 20px;
+        /* text-align: center; */
+    }
+
+    button {
+        height: 40px;
+        width: 120px;
+        padding: 10px;
+        margin-block-end: 20px;
+        background-color: rgb(159, 253, 17);
+        align-self: center;
+    }
+
+    .genderdrop {
+        padding: 10px;
+        margin: 10px 15px 10px 0px;
+        width: 475px;
+        height: 40px;
+    }
+
+    select {
+        padding: 10px;
+        width: 475px;
+        height: 40px;
+        background-color: white;
+        margin-bottom: 10px;
+    }
+
+    .innerdiv {
+        padding: 10px;
+        margin: 15px 15px 15px 15px;
+        text-align: left;
+    }
+
+    #head {
+        font-size: 50px;
+    }
+
+    #role {
+        font-size: 20px;
+    }
+</style>
+
+<body>
+    <center>
+        <div class="loginwindow" align="center">
+            <div class="innerdiv">
+                <label id="head">ADD USER</label>
+                <form action="/adduser" method="POST">
+                    <input name="name" placeholder="Name" required>
+                    <br>
+                    <input name="email" placeholder="Email" required>
+                    <br>
+                    <select name="gender" class="genderdrop" required>
+                        <option disabled selected value="">Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    <br>
+                    <input name="city" placeholder="City" required>
+                    <br>
+                    <input name="phone" placeholder="Phone" required>
+                    <br>
+                    <input name="dob" placeholder="Date of Birth" required>
+                    <br>
+                    <input name="password" placeholder="password" required>
+                    <br>
+                    <div class="form-group">
+
+                        <label id="role">Role:</label><br>
+                        <select name="role" required>
+                            <option value="user" selected>User</option>
+                            <option value="commuity manager">Community Builder</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <center><button>Add User</button></center>
+                </form>
+            </div>
+        </div>
+    </center>
+</body>
+
+</html>

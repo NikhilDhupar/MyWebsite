@@ -83,7 +83,7 @@ app.post('/login', function (req, res) {
 app.get('/adduser',function(req,res){
   if(req.session.islogin)
   {
-    res.render('loginpage');
+    res.render('addusers');
   }
   else
   {
