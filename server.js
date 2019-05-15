@@ -27,7 +27,9 @@ app.use(express.json());
 var mongoose = require('mongoose');
 var mongoDB = 'mongodb://localhost/project1';
 
-mongoose.connect(mongoDB);
+mongoose.connect(mongoDB, {
+  useNewUrlParser: true
+});
 
 mongoose.connection.on('error', (err) => {
   console.log('DB connection Error');
@@ -80,44 +82,59 @@ app.post('/login', function (req, res) {
     })
 })
 
-app.get('/adduser',function(req,res){
-  if(req.session.islogin)
-  {
+app.get('/adduser', function (req, res) {
+  if (req.session.islogin) {
     res.render('addusers');
-  }
-  else
-  {
+  } else {
     res.redirect('login.html')
   }
 })
 app.post('/adduser', function (req, res) {
   //console.log(req.body);
-  let newuser = new user({
-    name: req.body.name,
-    email: req.body.email,
-    gender: req.body.gender,
-    password: req.body.password,
-    city: req.body.city,
-    phno: req.body.phone,
-    dob: req.body.dob,
-    visibility: true,
-    role: req.body.role,
-    status: "pending",
-  })
-  newuser.save()
+  //checking if email is already registered or not
+  user.find({
+      "email": req.body.email
+    })
     .then(data => {
-      console.log(data)
-      res.send(data)
+      if (data.length != 0) {
+        //console.log(data[0].name);
+        res.send("Email already exists");
+      } else {
+        let newuser = new user({
+          name: req.body.name,
+          email: req.body.email,
+          gender: req.body.gender,
+          password: req.body.password,
+          city: req.body.city,
+          phno: req.body.phone,
+          dob: req.body.dob,
+          visibility: true,
+          role: req.body.role,
+          status: "pending",
+        })
+        newuser.save()
+          .then(data => {
+            console.log(data)
+            req.session.islogin = 1;
+            req.session.name = req.body.name;
+            req.session.email = req.body.email;
+            res.redirect("/home");
+          })
+          .catch(err => {
+            console.error(err)
+            res.send(error)
+          })
+
+      }
     })
     .catch(err => {
       console.error(err)
-      res.send(error)
+      res.send(err);
     })
 })
 
 app.get('/home', function (req, res) {
-  if(!req.session.islogin)
-  {
+  if (!req.session.islogin) {
     res.redirect('/login.html');
   }
   user.find({
