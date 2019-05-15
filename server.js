@@ -55,7 +55,7 @@ var productSchema = new mongoose.Schema({
 var user = mongoose.model('userdetails', productSchema);
 
 app.get('/', function (req, res) {
-  res.redirect('login.html')
+  res.redirect('/home')
 })
 app.post('/login', function (req, res) {
   //console.log(req.body);
@@ -124,7 +124,6 @@ app.post('/adduser', function (req, res) {
             console.error(err)
             res.send(error)
           })
-
       }
     })
     .catch(err => {
@@ -136,25 +135,26 @@ app.post('/adduser', function (req, res) {
 app.get('/home', function (req, res) {
   if (!req.session.islogin) {
     res.redirect('/login.html');
+  } else {
+    user.find({
+        "name": req.session.name,
+        "email": req.session.email
+      })
+      .then(data => {
+        if (data.length != 0) {
+          //console.log(data[0].name);
+          res.render('home', {
+            user: data[0]
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
   }
-  user.find({
-      "name": req.session.name,
-      "email": req.session.email
-    })
-    .then(data => {
-      if (data.length != 0) {
-        //console.log(data[0].name);
-        res.render('home', {
-          user: data[0]
-        });
-      } else {
-        res.redirect('/login.html');
-      }
-    })
-    .catch(err => {
-      console.error(err)
-      res.send(err);
-    })
 });
 
 console.log("Running on port 3000");
