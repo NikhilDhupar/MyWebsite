@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Website header</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+</head>
+<style type="text/css">
+    .sidenav {
+        margin-top: 60px;
+        height: 100%;
+        width: 100px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        display: block;
+        left: 0;
+        background-color: black;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 10px;
+    }
+
+
+    .sidenav a {
+        padding: 2px 2px 2px 2px;
+        text-decoration: none;
+        font-size: 15px;
+        color: #ada8a8;
+        display: block;
+        transition: 0.3s;
+    }
+
+    .sidenav a:hover {
+        color: #ffffff;
+    }
+
+    .sidenav li:hover {
+        transform: scale(1.1);
+        transition: .3s;
+        cursor: pointer;
+
+    }
+
+    .sidenav span:hover {
+        color: #ffffff;
+    }
+
+    .sidebar-nav {
+        padding: 20px 0 0 0;
+    }
+</style>
+
+<body>
+    <div id="sidebar" class="sidenav">
+        <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
+
+            <li class="onlyForPcNav" onclick="openSideNav()">
+                <a>
+                    <span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-bars fa-stack-1x "></i>
+                    </span>Menu
+                </a>
+            </li>
+
+
+            <li id="home-nav">
+                <a href="/home"><span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-home fa-stack-1x "></i></span>Home
+                </a>
+            </li>
+
+
+            <li id="add-user-nav">
+                <a href="/admin/adduser"><span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-plus-square fa-stack-1x "></i></span>
+                    Add User
+                </a>
+            </li>
+
+
+            <li id="user-list-nav" class="active">
+                <a href="/admin/userlist"> <span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-list-ul fa-stack-1x "></i></span>Users List</a>
+            </li>
+
+
+            <li id="community-list-nav">
+                <a href="/community/communityList"><span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-list-alt fa-stack-1x "></i></span>Community List</a>
+            </li>
+
+
+            <li id="switch-asuser-nav">
+                <a onclick="switchState('Switch As User')"><span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-toggle-off fa-stack-1x "></i></span>
+                    Switch As User
+                </a>
+            </li>
+
+
+            <li id="admin-tag-panel">
+                <a href="/tag"><span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-tags fa-stack-1x "></i></span>Tag Panel</a>
+            </li>
+
+
+            <li id="change-password-nav">
+                <a href="/changePassword"><span class="fa-stack fa-lg pull-left">
+                        <i class="fa fa-lock fa-stack-1x "></i></span>
+                    Change Password
+                </a>
+            </li>
+
+
+            <li>
+                <a onclick="logout()"><span class="fa-stack fa-lg pull-left" id="logout">
+                        <i class="fa fa-sign-out-alt fa-stack-1x "></i></span>Logout
+                </a>
+            </li>
+
+        </ul>
+    </div>
+</body>
+<script type="text/javascript">
+    function openSideNav() {
+        var sidebar = document.getElementById("sidebar");
+        var main = document.getElementById("main");
+        if (sidebar.style.width == "230px") {
+            sidebar.style.width = "100px";
+            main.style.marginLeft = "100px";
+        } else {
+            sidebar.style.width = "230px";
+            main.style.marginLeft = "230px";
+        }
+    }
+</script>
+
+</html>
