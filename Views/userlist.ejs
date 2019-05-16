@@ -12,66 +12,71 @@
 
 </head>
 <style>
-    .main{
+    .main {
         margin-left: 100px;
-        margin-top: 60px;
+        margin-top: 80px;
         background-color: rgb(250, 250, 250);
         transition: .5s;
     }
-    .usertable{
+
+    .usertable {
         border-width: 1px;
         margin: 50px;
         border-style: solid;
         border-color: rgb(204, 203, 203);
     }
-    .dataTables_paginate{
+
+    .dataTables_paginate {
         margin-top: 10px;
     }
-    .dataTables_filter{
+
+    .dataTables_filter {
         margin-bottom: 10px;
     }
-    select{
+
+    select {
         background-color: white;
         width: 60px;
         height: 25px;
     }
-    .sorting{
+
+    .sorting {
         border: .5px;
         border-style: solid;
         border-color: rgb(240, 240, 240);
     }
-    /* .usertable th{
-        
-    } */
+
 </style>
+
 <body style="background-color: rgb(250, 250, 250)">
-<%- include sidebar.ejs %>
-<div id="main" class="main">
-    <table id="usertable" class="usertable display cell-border">
-        <thead>
-            <tr>
-                <th class="cell-border">Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>City</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% for(var i=0; i < user.length ; i++) {%>
-            <tr>
-                <td><%= user[i].name %></td>
-                <td><%= user[i].email %></td>
-                <td><%= user[i].phno %></td>
-                <td><%= user[i].role %></td>
-                <td><%= user[i].status %></td>
-                <td><%= user[i].city %></td>
-            </tr>
-            <% } %>
-        </tbody>
-    </table>
-</div>
+    <%- include header.ejs %>
+    <%- include sidebar.ejs %>
+    <div id="main" class="main">
+        <table id="usertable" class="usertable display cell-border">
+            <thead>
+                <tr>
+                    <th class="cell-border">Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>City</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(var i=0; i < user.length ; i++) {%>
+                <tr>
+                    <td><%= user[i].name %></td>
+                    <td><%= user[i].email %></td>
+                    <td><%= user[i].phno %></td>
+                    <td><%= user[i].role %></td>
+                    <td><%= user[i].status %></td>
+                    <td><%= user[i].city %></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
 </body>
 <script>
     $(document).ready(function () {
