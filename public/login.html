@@ -124,7 +124,9 @@
     var submit = document.getElementById("submit");
     var password = document.getElementById("password");
     var checkuser = document.getElementById("checkuser");
-    var submit = document.getElementById("submit");
+    var name = document.getElementById("name");
+    user.onkeydown=pressenter;
+    password.onkeydown=pressenter;
 
     var request = new XMLHttpRequest();
     submit.onclick = checklogin;
@@ -154,6 +156,13 @@
                     }
                 }
             });
+        }
+    }
+    function pressenter(event){
+        var key=event.keyCode;
+        if(key==13)
+        {
+            checklogin();
         }
     }
 </script>
