@@ -11,12 +11,46 @@
     </script>
 
 </head>
-
-<body>
-    <table id="usertable" class="display">
+<style>
+    .main{
+        margin-left: 100px;
+        margin-top: 60px;
+        background-color: rgb(250, 250, 250);
+        transition: .5s;
+    }
+    .usertable{
+        border-width: 1px;
+        margin: 50px;
+        border-style: solid;
+        border-color: rgb(204, 203, 203);
+    }
+    .dataTables_paginate{
+        margin-top: 10px;
+    }
+    .dataTables_filter{
+        margin-bottom: 10px;
+    }
+    select{
+        background-color: white;
+        width: 60px;
+        height: 25px;
+    }
+    .sorting{
+        border: .5px;
+        border-style: solid;
+        border-color: rgb(240, 240, 240);
+    }
+    /* .usertable th{
+        
+    } */
+</style>
+<body style="background-color: rgb(250, 250, 250)">
+<%- include sidebar.ejs %>
+<div id="main" class="main">
+    <table id="usertable" class="usertable display cell-border">
         <thead>
             <tr>
-                <th>Name</th>
+                <th class="cell-border">Name</th>
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Role</th>
@@ -37,6 +71,7 @@
             <% } %>
         </tbody>
     </table>
+</div>
 </body>
 <script>
     $(document).ready(function () {
