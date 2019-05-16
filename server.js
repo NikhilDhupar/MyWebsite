@@ -82,11 +82,11 @@ app.post('/login', function (req, res) {
     })
 })
 
-app.get('/adduser', function (req, res) {
+app.get('/admin/adduser', function (req, res) {
   if (req.session.islogin) {
     res.render('addusers');
   } else {
-    res.redirect('login.html')
+    res.redirect('/login.html')
   }
 })
 app.post('/adduser', function (req, res) {
