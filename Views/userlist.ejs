@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        User List
+    </title>
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js">
+    </script>
+
+</head>
+
+<body>
+    <table id="usertable" class="display">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(var i=0; i < user.length ; i++) {%>
+            <tr>
+                <td><%= user[i].name %></td>
+                <td><%= user[i].email %></td>
+                <td><%= user[i].phno %></td>
+                <td><%= user[i].role %></td>
+                <td><%= user[i].status %></td>
+                <td><%= user[i].city %></td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+</body>
+<script>
+    $(document).ready(function () {
+        $('#usertable').DataTable();
+    });
+</script>
+
+</html>

@@ -157,5 +157,31 @@ app.get('/home', function (req, res) {
   }
 });
 
+app.get('/admin/userlist', function (req, res) {
+  if (!req.session.islogin) {
+    res.redirect('/login.html');
+  } else {
+    user.find({}, {
+        "name": 1,
+        "email": 1,
+        "phno": 1,
+        "status": 1,
+        "role": 1,
+        "city": 1,
+        "_id": 0
+      })
+      .then(data => {
+        console.log(data);
+        res.render('userlist', {
+          user: data
+        });
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
+  }
+})
+
 console.log("Running on port 3000");
 app.listen(3000)
