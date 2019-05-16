@@ -5,89 +5,100 @@
     <title>Adding user</title>
 </head>
 <style>
-    input {
+    .basicinput {
         padding: 10px;
-        margin: 10px 15px 10px 0px;
-        width: 450px;
+        margin: 10px 15px 10px 10px;
+        width: 90%;
         height: 15px;
     }
 
     .loginwindow {
-        width: 39%;
-        border-width: 1px;
-        background-color: rgb(236, 229, 219);
-        margin: 20px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: rgb(216, 214, 214);
+        background-color: White;
         /* text-align: center; */
+        display: grid;
+        grid-template-columns: 1fr 5fr 1fr;
     }
 
     button {
         height: 40px;
-        width: 120px;
+        width: 35%;
         padding: 10px;
         margin-block-end: 20px;
-        background-color: rgb(159, 253, 17);
+        background-color: rgb(119, 192, 10);
         align-self: center;
     }
 
-    .genderdrop {
+    .selectdrop {
         padding: 10px;
-        margin: 10px 15px 10px 0px;
-        width: 475px;
+        margin: 10px 15px 10px 10px;
+        width: 95%;
         height: 40px;
+        background-color: white;
     }
-
+/*
     select {
         padding: 10px;
-        width: 475px;
+        width: 95%;
         height: 40px;
+        margin: 2px 15px 10px 10px;
         background-color: white;
         margin-bottom: 10px;
     }
-
-    .innerdiv {
-        padding: 10px;
-        margin: 15px 15px 15px 15px;
-        text-align: left;
-    }
+*/
 
     #head {
-        font-size: 50px;
+        font-size: 45px;
+        margin-left: 10px;
+        margin-top: 20px;
+        padding-top: 10px;
     }
 
     #role {
         font-size: 20px;
+        margin-left: 10px;
+    }
+
+    .main {
+        margin-top: 60px;
+        display: grid;
+        grid-template-columns: 1.5fr 3fr 1.5fr;
     }
 </style>
 
-<body>
-        <%- include header.ejs %>
-    <center>
-        <div class="loginwindow" align="center" id="main">
-            <div class="innerdiv">
+<body style="background-color: rgb(236, 236, 236)">
+    <%- include header.ejs %>
+    <div class="main" id="main">
+        <div style="background-color: rgb(236, 236, 236)"></div>
+        <div class="loginwindow">
+            <div></div>
+            <div style="padding-top: 20px">
                 <label id="head">ADD USER</label>
                 <form action="/adduser" method="POST">
-                    <input name="name" placeholder="Name" required>
+                    <input name="name" placeholder="Name" required class="basicinput">
                     <br>
-                    <input name="email" placeholder="Email" required>
+                    <input name="email" placeholder="Email" required class="basicinput">
                     <br>
-                    <select name="gender" class="genderdrop" required>
+                    <select name="gender" class="selectdrop" required>
                         <option disabled selected value="">Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                     </select>
                     <br>
-                    <input name="city" placeholder="City" required>
+                    <input name="city" placeholder="City" required class="basicinput">
                     <br>
-                    <input name="phone" placeholder="Phone" required>
+                    <input name="phone" placeholder="Phone" required class="basicinput">
                     <br>
-                    <input name="dob" placeholder="Date of Birth" required>
+                    <input name="dob" placeholder="Date of Birth" required class="basicinput">
                     <br>
-                    <input name="password" placeholder="password" required>
+                    <input name="password" placeholder="password" required class="basicinput">
                     <br>
                     <div class="form-group">
 
                         <label id="role">Role:</label><br>
-                        <select name="role" required>
+                        <select name="role" required class="selectdrop">
                             <option value="user" selected>User</option>
                             <option value="commuity manager">Community Builder</option>
                             <option value="admin">Admin</option>
@@ -96,8 +107,10 @@
                     <center><button>Add User</button></center>
                 </form>
             </div>
+            <div></div>
         </div>
-    </center>
+        <div style="background-color: rgb(236, 236, 236)"></div>
+    </div>
 </body>
 
 </html>
