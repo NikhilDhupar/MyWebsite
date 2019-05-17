@@ -46,14 +46,14 @@
         border-color: rgb(240, 240, 240);
     }
 
-    .tabtext{
+    .tabtext {
         font-size: 14px;
         color: white;
         background-color: rgba(0, 0, 0, 0.76);
         margin: 10px 5px 30px 5px;
     }
 
-    .userdisp{
+    .userdisp {
         height: 20px;
         padding: 5px 10px 5px 10px;
         text-align: center;
@@ -61,12 +61,11 @@
         box-shadow: 0 4px 8px 0 rgb(116, 115, 115);
     }
 
-    .querytab{
-        float:right;
+    .querytab {
+        float: right;
         padding: 0px 5px;
         height: 30px;
     }
-
 </style>
 
 <body style="background-color: rgb(250, 250, 250)">
@@ -75,18 +74,19 @@
     <div id="main" class="main">
         <span class="tabtext userdisp" style="float:left;font-size: 16px"><b>User List</b></span>
         <select class="tabtext querytab" name="roletab" required style="width: 180px" id="roletab">
-                <option value="all">All</option>
-                <option value="admin">Admins</option>
-                <option value="user">Users</option>
-                <option value="community">Community Builders</option>
+            <option value="all">All</option>
+            <option value="admin">Admins</option>
+            <option value="user">Users</option>
+            <option value="community">Community Builders</option>
         </select>
 
         <select class="tabtext querytab" name="statustab" required style="width: 130px" id="statustab">
-                <option value="all">All</option>
-                <option value="pending">Pending</option>
-                <option value="confirmed">Confirmed</option>
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
         </select>
-        <span class="tabtext userdisp" style="float:right; font-size: 16px"><i class='fas fa-sync-alt' style='font-size:14px;color:white'></i>  Refresh</span>
+        <span class="tabtext userdisp" id="refreshbut" style="float:right;cursor: pointer; font-size: 16px"><i class='fas fa-sync-alt'
+                style='font-size:14px;color:white'></i> Refresh</span>
 
         <table id="usertable" class="usertable display cell-border">
             <thead>
@@ -115,9 +115,83 @@
     </div>
 </body>
 <script>
+    var table = "1"
+    var names;
+    var allentries;
+
     $(document).ready(function () {
-        $('#usertable').DataTable();
+        table = $('#usertable').DataTable();
+        allentries = table.rows().data();
     });
+
+    var refreshbut = document.getElementById("refreshbut");
+    var statustab = document.getElementById("statustab");
+    var roletab = document.getElementById("roletab");
+    roletab.onclick = printconsole;
+    statustab.onclick = printconsole;
+    refreshbut.onclick = printconsole;
+    
+    function printconsole() {
+        console.log(statustab.selectedIndex);
+        console.log(roletab.selectedIndex);
+        var status;
+        var role;
+        if (statustab.selectedIndex == '0')
+            status = "0";
+        else if (statustab.selectedIndex == "1")
+            status = "pending";
+        else
+            status = "cofirmed";
+
+        if (roletab.selectedIndex == "0")
+            role = "0";
+        else if (roletab.selectedIndex == "1")
+            role = "admin";
+        else if (roletab.selectedIndex == "2")
+            role = "user";
+        else
+            role = "commuity manager"
+        // console.log(role);
+        table.destroy();
+        table = $('#usertable').DataTable({
+            data: allentries
+        });
+        // console.log(status);
+        getrows(role, status);
+    }
+
+    function getrows(role, status) {
+        if (role == "0" && status == "0") {
+            names = table.rows().data();
+        } else if (role == "0") {
+            names = table.rows(function (idx, data, node) {
+                if (data[4] == status)
+                    return true;
+                else
+                    return false;
+            }).data();
+        } else if (status == "0") {
+            names = table.rows(function (idx, data, node) {
+                if (data[3] == role)
+                    return true;
+                else
+                    return false;
+            }).data();
+        } else {
+            names = table.rows(function (idx, data, node) {
+                if (data[3] == role && data[4] == status)
+                    return true;
+                else
+                    return false;
+            }).data();
+        }
+        //console.log(names);
+        table.destroy();
+        //console.log(document.getElementById("usertable"));
+        table = $('#usertable').DataTable({
+            data: names
+        });
+    }
 </script>
 
 </html>

@@ -171,7 +171,6 @@ app.get('/admin/userlist', function (req, res) {
         "_id": 0
       })
       .then(data => {
-        console.log(data);
         res.render('userlist', {
           user: data
         });
