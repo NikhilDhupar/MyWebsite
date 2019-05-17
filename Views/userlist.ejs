@@ -46,12 +46,48 @@
         border-color: rgb(240, 240, 240);
     }
 
+    .tabtext{
+        font-size: 14px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.76);
+        margin: 10px 5px 30px 5px;
+    }
+
+    .userdisp{
+        height: 20px;
+        padding: 5px 10px 5px 10px;
+        text-align: center;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgb(116, 115, 115);
+    }
+
+    .querytab{
+        float:right;
+        padding: 0px 5px;
+        height: 30px;
+    }
+
 </style>
 
 <body style="background-color: rgb(250, 250, 250)">
     <%- include header.ejs %>
     <%- include sidebar.ejs %>
     <div id="main" class="main">
+        <span class="tabtext userdisp" style="float:left;font-size: 16px"><b>User List</b></span>
+        <select class="tabtext querytab" name="roletab" required style="width: 180px" id="roletab">
+                <option value="all">All</option>
+                <option value="admin">Admins</option>
+                <option value="user">Users</option>
+                <option value="community">Community Builders</option>
+        </select>
+
+        <select class="tabtext querytab" name="statustab" required style="width: 130px" id="statustab">
+                <option value="all">All</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+        </select>
+        <span class="tabtext userdisp" style="float:right; font-size: 16px"><i class='fas fa-sync-alt' style='font-size:14px;color:white'></i>  Refresh</span>
+
         <table id="usertable" class="usertable display cell-border">
             <thead>
                 <tr>
