@@ -66,6 +66,40 @@
         padding: 0px 5px;
         height: 30px;
     }
+
+    .actioncolumn {
+        text-align: center;
+    }
+
+    .actionbut {
+
+        padding: 5px 8px 5px 8px;
+        cursor: pointer;
+        margin: 5px;
+        font-size: 12px;
+        color: white;
+    }
+
+    .emailbut {
+        background-color: black;
+
+    }
+
+    .editbut {
+        background-color: blue;
+    }
+
+    .deactivatebut{
+        background-color: rgb(255, 196, 0);
+    }
+
+    .activatebut{
+        background-color: rgb(81, 255, 0);
+    }
+
+    tr {
+        height: 45px;
+    }
 </style>
 
 <body style="background-color: rgb(250, 250, 250)">
@@ -85,8 +119,8 @@
             <option value="pending">Pending</option>
             <option value="confirmed">Confirmed</option>
         </select>
-        <span class="tabtext userdisp" id="refreshbut" style="float:right;cursor: pointer; font-size: 16px"><i class='fas fa-sync-alt'
-                style='font-size:14px;color:white'></i> Refresh</span>
+        <span class="tabtext userdisp" id="refreshbut" style="float:right;cursor: pointer; font-size: 16px"><i
+                class='fas fa-sync-alt' style='font-size:14px;color:white'></i> Refresh</span>
 
         <table id="usertable" class="usertable display cell-border">
             <thead>
@@ -97,6 +131,7 @@
                     <th>Role</th>
                     <th>Status</th>
                     <th>City</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -108,6 +143,18 @@
                     <td><%= user[i].role %></td>
                     <td><%= user[i].status %></td>
                     <td><%= user[i].city %></td>
+                    <td class="actioncolumn">
+                        <span class="actionbut emailbut" id="emailbut"><i class='fas fa-envelope'></i></span>
+                        <% if(user[i].role != "superuser") {%>
+                            <span class="actionbut editbut" id="editbut"><i class='fas fa-edit'></i></span>
+                            <% if(user[i].visibility) {%>
+                                <span class="actionbut deactivatebut" id="deactivatebut"><i class="fa fa-times-circle"></i></span>
+                            <% } else { %>
+                                <span class="actionbut activatebut" id="activatebut"><i class="fa fa-check-circle"></i></span>
+                                <% } %>
+                        <% } %>
+
+                    </td>
                 </tr>
                 <% } %>
             </tbody>
@@ -130,7 +177,7 @@
     roletab.onclick = printconsole;
     statustab.onclick = printconsole;
     refreshbut.onclick = printconsole;
-    
+
     function printconsole() {
         console.log(statustab.selectedIndex);
         console.log(roletab.selectedIndex);
@@ -156,6 +203,7 @@
         table = $('#usertable').DataTable({
             data: allentries
         });
+        document.getElementById("usertable").style.visibility = "hidden";
         // console.log(status);
         getrows(role, status);
     }
@@ -191,6 +239,7 @@
         table = $('#usertable').DataTable({
             data: names
         });
+        document.getElementById("usertable").style.visibility = "visible";
     }
 </script>
 
