@@ -6,6 +6,9 @@
         User List
     </title>
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="/bootstrapmodals.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js">
     </script>
@@ -69,6 +72,7 @@
 
     .actioncolumn {
         text-align: center;
+
     }
 
     .actionbut {
@@ -76,7 +80,7 @@
         padding: 5px 8px 5px 8px;
         cursor: pointer;
         margin: 5px;
-        font-size: 12px;
+        font-size: 14px;
         color: white;
     }
 
@@ -89,11 +93,56 @@
         background-color: blue;
     }
 
-    .deactivatebut{
+    .editmodal-div {
+        height: 30px;
+        display: grid;
+        grid-template-columns: 1fr 4fr;
+        font-size: 14px;
+    }
+
+    .editmodal-label {
+        text-align: right;
+        margin: 10px;
+    }
+
+    .editmodal-select {
+        height: 30px;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .editmodal-input {
+        width: 100%;
+        height: 25px;
+        border-radius: 5px;
+        border-width: 1px;
+        background-color: white;
+        padding-left: 5px;
+
+    }
+
+    .modal-button {
+        background-color: white;
+        cursor: pointer;
+        width: 65px;
+        height: 24px;
+        display: inline-block;
+        padding: 6px 12px 2px 12px;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 3px;
+        text-align: center;
+    }
+
+    .modal-button:hover {
+        background-color: rgb(224, 224, 224);
+    }
+
+    .deactivatebut {
         background-color: rgb(255, 196, 0);
     }
 
-    .activatebut{
+    .activatebut {
         background-color: rgb(81, 255, 0);
     }
 
@@ -144,21 +193,109 @@
                     <td><%= user[i].status %></td>
                     <td><%= user[i].city %></td>
                     <td class="actioncolumn">
-                        <span class="actionbut emailbut" id="emailbut"><i class='fas fa-envelope'></i></span>
-                        <% if(user[i].role != "superuser") {%>
-                            <span class="actionbut editbut" id="editbut"><i class='fas fa-edit'></i></span>
+                        <center>
+                            <span class="actionbut emailbut" id="emailbut"><i class='fas fa-envelope'></i></span>
+                            <% if(user[i].role != "superuser") {%>
+                            <span class="actionbut editbut" id="editbut" onclick="editclick(<%= user[i] %>)"><i
+                                    class='fas fa-edit'></i></span>
                             <% if(user[i].visibility) {%>
-                                <span class="actionbut deactivatebut" id="deactivatebut"><i class="fa fa-times-circle"></i></span>
+                            <span class="actionbut deactivatebut" id="deactivatebut"><i
+                                    class="fa fa-times-circle"></i></span>
                             <% } else { %>
-                                <span class="actionbut activatebut" id="activatebut"><i class="fa fa-check-circle"></i></span>
-                                <% } %>
-                        <% } %>
-
+                            <span class="actionbut activatebut" id="activatebut"><i
+                                    class="fa fa-check-circle"></i></span>
+                            <% } %>
+                            <% } %>
+                        </center>
                     </td>
                 </tr>
                 <% } %>
             </tbody>
         </table>
+
+        <div class="container">
+
+            <!-- Edit User Modal -->
+            <div class="modal fade" id="edit-userdetails-modal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" style="cursor: pointer"
+                                data-dismiss="modal">&times;</button>
+                            <h2 class="modal-title" id="editbut-header">Modal Header</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/updateuser" method="POST">
+                                <div class="editmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>Username: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <input id="update-username" name="username" value="" required
+                                            class="editmodal-input">
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="editmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>Phone: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <input id="update-phone" name="phno" value="" required class="editmodal-input">
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="editmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>City: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <input id="update-city" name="city" value="" required class="editmodal-input">
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="editmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>Status: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <select name="status" id="update-status" required class="editmodal-select">
+                                            <option value="confirmed">Confirmed</option>
+                                            <option value="pending">Pending</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="editmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>Role: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <select name="role" required id="update-role" class="editmodal-select">
+                                            <option value="admin">Admin</option>
+                                            <option value="user">User</option>
+                                            <option value="community">Community Builder</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="editmodal-div">
+                                    <div></div>
+                                    <div>
+                                        <submit type="button" class="modal-button">Update</submit>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <submit type="button" class="modal-button" data-dismiss="modal">Close</submit>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 <script>
@@ -240,6 +377,28 @@
             data: names
         });
         document.getElementById("usertable").style.visibility = "visible";
+    }
+    $(document).on("click", "#editbut", function () {
+        var myBookId = $(this).parent().parent().parent()[0].children;
+        //$(".modal-body #bookId").val( myBookId );
+        console.log("inside jquery function");
+        for (var i = 0; i < 6; i++) {
+            console.log(myBookId[i].innerHTML);
+        }
+        //console.log(myBookId);
+        $('#editbut-header').html("Update " + myBookId[1].innerHTML);
+        $('#update-username').val(myBookId[0].innerHTML);
+        $('#update-phone').val(myBookId[2].innerHTML);
+        $('#update-city').val(myBookId[5].innerHTML);
+        $('#update-status').val(myBookId[4].innerHTML);
+        $('#update-role').val(myBookId[3].innerHTML);
+        $('#edit-userdetails-modal').modal('show');
+    });
+
+
+    function editclick(userdata) {
+        console.log("inside edit click function");
+        console.log(userdata);
     }
 </script>
 

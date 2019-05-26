@@ -114,7 +114,7 @@ app.post('/adduser', function (req, res) {
         })
         newuser.save()
           .then(data => {
-            console.log(data)
+            //console.log(data)
             req.session.islogin = 1;
             req.session.name = req.body.name;
             req.session.email = req.body.email;
@@ -168,6 +168,7 @@ app.get('/admin/userlist', function (req, res) {
         "status": 1,
         "role": 1,
         "city": 1,
+        "visibility": 1,
         "_id": 0
       })
       .then(data => {
