@@ -7,10 +7,10 @@
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 </head>
 <style type="text/css">
-    .sidenav {
+    .sidebarnavigation {
         margin-top: 60px;
         height: 100%;
-        width: 100px;
+        width: 60px;
         position: fixed;
         z-index: 1;
         top: 0;
@@ -23,7 +23,7 @@
     }
 
 
-    .sidenav a {
+    .sidebarnavigation a {
         padding: 2px 2px 2px 2px;
         text-decoration: none;
         font-size: 15px;
@@ -32,42 +32,46 @@
         transition: 0.3s;
     }
 
-    .sidenav a:hover {
+    .sidebarnavigation a:hover {
         color: #ffffff;
     }
 
-    .sidenav li:hover {
+    .sidebarnavigation li:hover {
         transform: scale(1.1);
         transition: .3s;
         cursor: pointer;
 
     }
 
-    .sidenav span:hover {
+    .sidebarnavigation span:hover {
         color: #ffffff;
     }
 
     .sidebar-nav {
         padding: 20px 0 0 0;
     }
+
+    .hidetext {
+        display: none;
+        transition: 0.5s;
+    }
 </style>
 
 <body>
-    <div id="sidebar" class="sidenav">
+    <div id="sidebar" class="sidebarnavigation">
         <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
 
             <li class="onlyForPcNav" onclick="openSideNav()">
                 <a>
                     <span class="fa-stack fa-lg pull-left">
                         <i class="fa fa-bars fa-stack-1x "></i>
-                    </span>Menu
+                    </span><span id="menu-togglebut" class="hidetext">Menu</span>
                 </a>
             </li>
 
-
             <li id="home-nav">
                 <a href="/home"><span class="fa-stack fa-lg pull-left">
-                        <i class="fa fa-home fa-stack-1x "></i></span>Home
+                        <i class="fa fa-home fa-stack-1x "></i></span><span id="menu-home" class="hidetext">Home</span>
                 </a>
             </li>
 
@@ -75,48 +79,52 @@
             <li id="add-user-nav">
                 <a href="/admin/adduser"><span class="fa-stack fa-lg pull-left">
                         <i class="fa fa-plus-square fa-stack-1x "></i></span>
-                    Add User
+                    <span id="menu-adduser" class="hidetext">Add User</span>
                 </a>
             </li>
 
 
             <li id="user-list-nav" class="active">
                 <a href="/admin/userlist"> <span class="fa-stack fa-lg pull-left">
-                        <i class="fa fa-list-ul fa-stack-1x "></i></span>Users List</a>
+                        <i class="fa fa-list-ul fa-stack-1x "></i></span><span id="menu-userlist" class="hidetext">User
+                        List</span></a>
             </li>
 
 
             <li id="community-list-nav">
                 <a href="/community/communityList"><span class="fa-stack fa-lg pull-left">
-                        <i class="fa fa-list-alt fa-stack-1x "></i></span>Community List</a>
+                        <i class="fa fa-list-alt fa-stack-1x "></i></span><span id="menu-communitylist"
+                        class="hidetext">Community List</span></a>
             </li>
 
 
             <li id="switch-asuser-nav">
                 <a onclick="switchState('Switch As User')"><span class="fa-stack fa-lg pull-left">
                         <i class="fa fa-toggle-off fa-stack-1x "></i></span>
-                    Switch As User
+                    <span id="menu-switchuser" class="hidetext">Switch As User</span>
                 </a>
             </li>
 
 
             <li id="admin-tag-panel">
                 <a href="/tag"><span class="fa-stack fa-lg pull-left">
-                        <i class="fa fa-tags fa-stack-1x "></i></span>Tag Panel</a>
+                        <i class="fa fa-tags fa-stack-1x "></i></span><span id="menu-tagpanel" class="hidetext">Tag
+                        Panel</span></a>
             </li>
 
 
             <li id="change-password-nav">
                 <a href="/changePassword"><span class="fa-stack fa-lg pull-left">
                         <i class="fa fa-lock fa-stack-1x "></i></span>
-                    Change Password
+                    <span id="menu-changepaswd" class="hidetext">Change Password</span>
                 </a>
             </li>
 
 
             <li>
                 <a onclick="logout()"><span class="fa-stack fa-lg pull-left" id="logout">
-                        <i class="fa fa-sign-out-alt fa-stack-1x "></i></span>Logout
+                        <i class="fa fa-sign-out-alt fa-stack-1x "></i></span><span id="menu-logout"
+                        class="hidetext">Logout</span>
                 </a>
             </li>
 
@@ -128,12 +136,36 @@
         var sidebar = document.getElementById("sidebar");
         var main = document.getElementById("main");
         if (sidebar.style.width == "230px") {
-            sidebar.style.width = "100px";
-            main.style.marginLeft = "100px";
+            sidebar.style.width = "60px";
+            main.style.marginLeft = "60px";
+            document.getElementById("menu-togglebut").classList.add("hidetext");
+            document.getElementById("menu-home").classList.add("hidetext");
+            document.getElementById("menu-adduser").classList.add("hidetext");
+            document.getElementById("menu-userlist").classList.add("hidetext");
+            document.getElementById("menu-communitylist").classList.add("hidetext");
+            document.getElementById("menu-switchuser").classList.add("hidetext");
+            document.getElementById("menu-tagpanel").classList.add("hidetext");
+            document.getElementById("menu-logout").classList.add("hidetext");
+            document.getElementById("menu-changepaswd").classList.add("hidetext");
         } else {
             sidebar.style.width = "230px";
             main.style.marginLeft = "230px";
+            timeFunction();
         }
+    }
+
+    function timeFunction() {
+        setTimeout(function () {
+            document.getElementById("menu-togglebut").classList.remove("hidetext");
+            document.getElementById("menu-home").classList.remove("hidetext");
+            document.getElementById("menu-adduser").classList.remove("hidetext");
+            document.getElementById("menu-userlist").classList.remove("hidetext");
+            document.getElementById("menu-communitylist").classList.remove("hidetext");
+            document.getElementById("menu-switchuser").classList.remove("hidetext");
+            document.getElementById("menu-tagpanel").classList.remove("hidetext");
+            document.getElementById("menu-logout").classList.remove("hidetext");
+            document.getElementById("menu-changepaswd").classList.remove("hidetext");
+        }, 200);
     }
 </script>
 
