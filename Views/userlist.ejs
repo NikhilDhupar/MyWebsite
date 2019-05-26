@@ -125,9 +125,9 @@
         background-color: white;
         cursor: pointer;
         width: 65px;
-        height: 24px;
+        height: 35px;
         display: inline-block;
-        padding: 6px 12px 2px 12px;
+        padding: 6px 12px 6px 12px;
         border-style: solid;
         border-width: 1px;
         border-radius: 3px;
@@ -160,7 +160,7 @@
             <option value="all">All</option>
             <option value="admin">Admins</option>
             <option value="user">Users</option>
-            <option value="community">Community Builders</option>
+            <option value="community builder">Community Builders</option>
         </select>
 
         <select class="tabtext querytab" name="statustab" required style="width: 130px" id="statustab">
@@ -196,7 +196,7 @@
                         <center>
                             <span class="actionbut emailbut" id="emailbut"><i class='fas fa-envelope'></i></span>
                             <% if(user[i].role != "superuser") {%>
-                            <span class="actionbut editbut" id="editbut" onclick="editclick(<%= user[i] %>)"><i
+                            <span class="actionbut editbut" id="editbut"><i
                                     class='fas fa-edit'></i></span>
                             <% if(user[i].visibility) {%>
                             <span class="actionbut deactivatebut" id="deactivatebut"><i
@@ -276,21 +276,21 @@
                                         <select name="role" required id="update-role" class="editmodal-select">
                                             <option value="admin">Admin</option>
                                             <option value="user">User</option>
-                                            <option value="community">Community Builder</option>
+                                            <option value="community builder">Community Builder</option>
                                         </select>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="editmodal-div">
-                                    <div></div>
+                                    <div><input name="email" id="update-email" type="hidden" value=""></div>
                                     <div>
-                                        <submit type="button" class="modal-button">Update</submit>
+                                        <input type="submit" class="modal-button" value="Update">
                                     </div>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <submit type="button" class="modal-button" data-dismiss="modal">Close</submit>
+                            <input type="button" class="modal-button" data-dismiss="modal" value="Close">
                         </div>
                     </div>
                 </div>
@@ -334,7 +334,7 @@
         else if (roletab.selectedIndex == "2")
             role = "user";
         else
-            role = "commuity manager"
+            role = "community builder"
         // console.log(role);
         table.destroy();
         table = $('#usertable').DataTable({
@@ -379,27 +379,17 @@
         document.getElementById("usertable").style.visibility = "visible";
     }
     $(document).on("click", "#editbut", function () {
-        var myBookId = $(this).parent().parent().parent()[0].children;
-        //$(".modal-body #bookId").val( myBookId );
-        console.log("inside jquery function");
-        for (var i = 0; i < 6; i++) {
-            console.log(myBookId[i].innerHTML);
-        }
-        //console.log(myBookId);
-        $('#editbut-header').html("Update " + myBookId[1].innerHTML);
-        $('#update-username').val(myBookId[0].innerHTML);
-        $('#update-phone').val(myBookId[2].innerHTML);
-        $('#update-city').val(myBookId[5].innerHTML);
-        $('#update-status').val(myBookId[4].innerHTML);
-        $('#update-role').val(myBookId[3].innerHTML);
+        var myUserData = $(this).parent().parent().parent()[0].children;
+        //$(".modal-body #bookId").val( myUserData );
+        $('#editbut-header').html("Update " + myUserData[1].innerHTML);
+        $('#update-username').val(myUserData[0].innerHTML);
+        $('#update-phone').val(myUserData[2].innerHTML);
+        $('#update-city').val(myUserData[5].innerHTML);
+        $('#update-email').val(myUserData[1].innerHTML);
+        $('#update-status').val(myUserData[4].innerHTML);
+        $('#update-role').val(myUserData[3].innerHTML);
         $('#edit-userdetails-modal').modal('show');
     });
-
-
-    function editclick(userdata) {
-        console.log("inside edit click function");
-        console.log(userdata);
-    }
 </script>
 
 </html>

@@ -53,6 +53,7 @@ var productSchema = new mongoose.Schema({
 });
 
 var user = mongoose.model('userdetails', productSchema);
+mongoose.set('useFindAndModify', false);
 
 app.get('/', function (req, res) {
   res.redirect('/home')
@@ -181,7 +182,35 @@ app.get('/admin/userlist', function (req, res) {
         res.send(err);
       })
   }
-})
+});
+
+app.post('/updateuser',function(req,res){
+  user.findOneAndUpdate(
+    {
+      //search query
+        email: req.body.email  
+    }, 
+    {
+      // field:values to update
+        name: req.body.username,
+        email: req.body.email,
+        phno: req.body.phno,
+        role: req.body.role,
+        city: req.body.city,
+        status: req.body.status,
+    },
+    {
+      new: true,                       // return updated doc
+      runValidators: true              // validate before update
+    })
+    .then(data => {
+        res.redirect('/admin/userlist')
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(error)
+      })
+});
 
 console.log("Running on port 3000");
 app.listen(3000)
