@@ -258,5 +258,13 @@ app.post('/admin/userlist/enableuser', function (req, res) {
     })
 });
 
+app.get('/changePassword',function(req,res){
+  if (!req.session.islogin) {
+    res.redirect('/login.html');
+  } else {
+    res.render('changepassword');
+  }
+})
+
 console.log("Running on port 3000");
 app.listen(3000)
