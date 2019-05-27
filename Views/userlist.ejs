@@ -191,7 +191,7 @@
                     <td><%= user[i].role %></td>
                     <td><%= user[i].status %></td>
                     <td><%= user[i].city %></td>
-                    <td class="actioncolumn">
+                    <td class="actioncolumn" id="actionbutton">
                         <center>
                             <span class="actionbut emailbut" id="emailbut"><i class='fas fa-envelope'></i></span>
                             <% if(user[i].role != "superuser") {%>
@@ -310,7 +310,8 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success">Yes</button>
+                            <button type="button" class="btn btn-success" onclick="deactivateyes()"
+                                data-dismiss="modal">Yes</button>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
                         </div>
                     </div>
@@ -336,10 +337,12 @@
     roletab.onclick = printconsole;
     statustab.onclick = printconsole;
     refreshbut.onclick = printconsole;
+    var UserData;
+    var actionbutton;
 
     function printconsole() {
-        console.log(statustab.selectedIndex);
-        console.log(roletab.selectedIndex);
+        //console.log(statustab.selectedIndex);
+        //console.log(roletab.selectedIndex);
         var status;
         var role;
         if (statustab.selectedIndex == '0')
@@ -401,25 +404,51 @@
         document.getElementById("usertable").style.visibility = "visible";
     }
     $(document).on("click", "#editbut", function () {
-        var myUserData = $(this).parent().parent().parent()[0].children;
-        //$(".modal-body #bookId").val( myUserData );
-        $('#editbut-header').html("Update " + myUserData[1].innerHTML);
-        $('#update-username').val(myUserData[0].innerHTML);
-        $('#update-phone').val(myUserData[2].innerHTML);
-        $('#update-city').val(myUserData[5].innerHTML);
-        $('#update-email').val(myUserData[1].innerHTML);
-        $('#update-status').val(myUserData[4].innerHTML);
-        $('#update-role').val(myUserData[3].innerHTML);
+        UserData = $(this).parent().parent().parent()[0].children;
+        //$(".modal-body #bookId").val( UserData );
+        $('#editbut-header').html("Update " + UserData[1].innerHTML);
+        $('#update-username').val(UserData[0].innerHTML);
+        $('#update-phone').val(UserData[2].innerHTML);
+        $('#update-city').val(UserData[5].innerHTML);
+        $('#update-email').val(UserData[1].innerHTML);
+        $('#update-status').val(UserData[4].innerHTML);
+        $('#update-role').val(UserData[3].innerHTML);
         $('#edit-userdetails-modal').modal('show');
     });
 
     $(document).on("click", "#deactivatebut", function () {
-        console.log("Deactivate button clicked");
-        var myUserData = $(this).parent().parent().parent()[0].children;
-        $('#deactivate-user-body').html("Are you sure you want to deactivate " + myUserData[1].innerHTML +
-        " ?");
+        //console.log("Deactivate button clicked");
+        UserData = $(this).parent().parent().parent()[0].children;
+        actionbutton = $(this).parent();
+        $('#deactivate-user-body').html("Are you sure you want to deactivate " + UserData[1].innerHTML +
+            " ?");
         $('#deactivate-user-modal').modal('show');
     });
+
+    function deactivateyes() {
+        //console.log("Pressed deactivate yes button");
+        console.log(UserData[1].innerHTML);
+        console.log(actionbutton[0].childNodes);
+        var request = new XMLHttpRequest();
+        request.open('post', "/admin/userlist/disableuser");
+        request.setRequestHeader("Content-Type", "Application/JSON");
+        request.send(JSON.stringify({
+            "email": UserData[1].innerHTML
+        }));
+        request.addEventListener('load', function () {
+            if (request.status === 200) {
+                var result = JSON.parse(request.responseText);
+                if (result == "0") {
+                    alert("connection problem or email not matched");
+                } else if (result == "1") {
+                    console.log("Changed visibility at backend");
+                    location.reload();
+                } else {
+                    alert(result);
+                }
+            }
+        });
+    }
 </script>
 
 </html>

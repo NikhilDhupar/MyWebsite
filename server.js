@@ -184,32 +184,50 @@ app.get('/admin/userlist', function (req, res) {
   }
 });
 
-app.post('/admin/userlist/updateuser',function(req,res){
-  user.findOneAndUpdate(
-    {
+app.post('/admin/userlist/updateuser', function (req, res) {
+  user.findOneAndUpdate({
       //search query
-        email: req.body.email  
-    }, 
-    {
+      email: req.body.email
+    }, {
       // field:values to update
-        name: req.body.username,
-        email: req.body.email,
-        phno: req.body.phno,
-        role: req.body.role,
-        city: req.body.city,
-        status: req.body.status,
-    },
-    {
-      new: true,                       // return updated doc
-      runValidators: true              // validate before update
+      name: req.body.username,
+      email: req.body.email,
+      phno: req.body.phno,
+      role: req.body.role,
+      city: req.body.city,
+      status: req.body.status,
+    }, {
+      new: true, // return updated doc
+      runValidators: true // validate before update
     })
     .then(data => {
-        res.redirect('/admin/userlist')
-      })
-      .catch(err => {
-        console.error(err)
-        res.send(error)
-      })
+      res.redirect('/admin/userlist')
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(error)
+    })
+});
+
+app.post('/admin/userlist/disableuser', function (req, res) {
+  //console.log(req.body);
+  user.findOneAndUpdate({
+      //search query
+      email: req.body.email
+    }, {
+      // field:values to update
+      visibility: false
+    }, {
+      new: true, // return updated doc
+      runValidators: true // validate before update
+    })
+    .then(data => {
+      res.send("1");
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(error)
+    })
 });
 
 console.log("Running on port 3000");
