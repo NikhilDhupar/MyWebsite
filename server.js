@@ -230,5 +230,26 @@ app.post('/admin/userlist/disableuser', function (req, res) {
     })
 });
 
+app.post('/admin/userlist/enableuser', function (req, res) {
+  //console.log(req.body);
+  user.findOneAndUpdate({
+      //search query
+      email: req.body.email
+    }, {
+      // field:values to update
+      visibility: true
+    }, {
+      new: true, // return updated doc
+      runValidators: true // validate before update
+    })
+    .then(data => {
+      res.send("1");
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(error)
+    })
+});
+
 console.log("Running on port 3000");
 app.listen(3000)
