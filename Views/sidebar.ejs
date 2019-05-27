@@ -22,6 +22,9 @@
         padding-top: 10px;
     }
 
+    .logout-container{
+        background-color: rgba(54, 70, 93, 0.95);
+    }
 
     .sidebarnavigation a {
         padding: 2px 2px 2px 2px;
@@ -122,16 +125,41 @@
 
 
             <li>
-                <a onclick="logout()"><span class="fa-stack fa-lg pull-left" id="logout">
+                <a data-toggle="modal" data-target="#logout-modal"><span class="fa-stack fa-lg pull-left" id="logout">
                         <i class="fa fa-sign-out-alt fa-stack-1x "></i></span><span id="menu-logout"
                         class="hidetext">Logout</span>
                 </a>
             </li>
-
         </ul>
     </div>
+
+    <div class="logout-container">
+        <!-- Logout User Modal -->
+        <div class="modal fade" id="logout-modal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" style="cursor: pointer"
+                            data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title" id="logout-header">Confirm Logout!</h3>
+                    </div>
+                    <div class="modal-body" id="logout-body">
+                        Do you really want to logout ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" onclick="logout()"
+                            data-dismiss="modal">Yes</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
-<script type="text/javascript">
+<script >
     function openSideNav() {
         var sidebar = document.getElementById("sidebar");
         var main = document.getElementById("main");
@@ -167,6 +195,20 @@
             document.getElementById("menu-changepaswd").classList.remove("hidetext");
         }, 300);
     }
+
+    function logout() {
+        console.log("clicked logout yes");
+        var request = new XMLHttpRequest();
+        request.open('post', "/logout");
+        //request.setRequestHeader("Content-Type", "Application/JSON");
+        request.send();
+        request.addEventListener('load', function () {
+            if (request.status === 200) {
+            location.reload();
+            }
+        });
+    }
+
 </script>
 
 </html>

@@ -230,6 +230,13 @@ app.post('/admin/userlist/disableuser', function (req, res) {
     })
 });
 
+app.post('/logout', function (req, res) {
+  req.session.islogin = 0;
+  req.session.name = "";
+  req.session.email = "";
+  res.send("1");
+})
+
 app.post('/admin/userlist/enableuser', function (req, res) {
   //console.log(req.body);
   user.findOneAndUpdate({

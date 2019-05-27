@@ -3,6 +3,7 @@
 
 <head>
     <title>Adding user</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 </head>
 <style>
     .basicinput {
@@ -20,16 +21,17 @@
         /* text-align: center; */
         display: grid;
         grid-template-columns: 1fr 5fr 1fr;
+        padding: 10px;
     }
 
-    button {
+    /* button {
         height: 40px;
         width: 35%;
         padding: 10px;
         margin-block-end: 20px;
         background-color: rgb(119, 192, 10);
         align-self: center;
-    }
+    } */
 
     .selectdrop {
         padding: 10px;
@@ -95,7 +97,7 @@
                             <option value="admin">Admin</option>
                         </select>
                     </div>
-                    <center><button>Add User</button></center>
+                    <center><button class="btn btn-success">Add User</button></center>
                 </form>
             </div>
             <div></div>
