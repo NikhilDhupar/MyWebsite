@@ -184,7 +184,7 @@ app.get('/admin/userlist', function (req, res) {
   }
 });
 
-app.post('/updateuser',function(req,res){
+app.post('/admin/userlist/updateuser',function(req,res){
   user.findOneAndUpdate(
     {
       //search query

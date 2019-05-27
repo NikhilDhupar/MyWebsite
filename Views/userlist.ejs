@@ -6,7 +6,6 @@
         User List
     </title>
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.3.1.js"></script>
-    <link rel="stylesheet" href="/bootstrapmodals.css">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
@@ -196,8 +195,7 @@
                         <center>
                             <span class="actionbut emailbut" id="emailbut"><i class='fas fa-envelope'></i></span>
                             <% if(user[i].role != "superuser") {%>
-                            <span class="actionbut editbut" id="editbut"><i
-                                    class='fas fa-edit'></i></span>
+                            <span class="actionbut editbut" id="editbut"><i class='fas fa-edit'></i></span>
                             <% if(user[i].visibility) {%>
                             <span class="actionbut deactivatebut" id="deactivatebut"><i
                                     class="fa fa-times-circle"></i></span>
@@ -214,7 +212,6 @@
         </table>
 
         <div class="container">
-
             <!-- Edit User Modal -->
             <div class="modal fade" id="edit-userdetails-modal" role="dialog">
                 <div class="modal-dialog">
@@ -227,7 +224,7 @@
                             <h2 class="modal-title" id="editbut-header">Modal Header</h4>
                         </div>
                         <div class="modal-body">
-                            <form action="/updateuser" method="POST">
+                            <form action="/admin/userlist/updateuser" method="POST">
                                 <div class="editmodal-div">
                                     <div class="editmodal-label">
                                         <label>Username: </label>
@@ -284,18 +281,43 @@
                                 <div class="editmodal-div">
                                     <div><input name="email" id="update-email" type="hidden" value=""></div>
                                     <div>
-                                        <input type="submit" class="modal-button" value="Update">
+                                        <input type="submit" class="btn btn-default" value="Update">
                                     </div>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <input type="button" class="modal-button" data-dismiss="modal" value="Close">
+                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Close">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="container">
+            <!-- Edit User Modal -->
+            <div class="modal fade" id="deactivate-user-modal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" style="cursor: pointer"
+                                data-dismiss="modal">&times;</button>
+                            <h3 class="modal-title" id="deactivatebut-header">Deactivate User?</h4>
+                        </div>
+                        <div class="modal-body" id="deactivate-user-body">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success">Yes</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </body>
 <script>
@@ -389,6 +411,14 @@
         $('#update-status').val(myUserData[4].innerHTML);
         $('#update-role').val(myUserData[3].innerHTML);
         $('#edit-userdetails-modal').modal('show');
+    });
+
+    $(document).on("click", "#deactivatebut", function () {
+        console.log("Deactivate button clicked");
+        var myUserData = $(this).parent().parent().parent()[0].children;
+        $('#deactivate-user-body').html("Are you sure you want to deactivate " + myUserData[1].innerHTML +
+        " ?");
+        $('#deactivate-user-modal').modal('show');
     });
 </script>
 
