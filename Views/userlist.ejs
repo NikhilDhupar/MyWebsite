@@ -295,7 +295,7 @@
         </div>
 
         <div class="container">
-            <!-- Edit User Modal -->
+            <!-- Deactivate User Modal -->
             <div class="modal fade" id="deactivate-user-modal" role="dialog">
                 <div class="modal-dialog">
 
@@ -311,6 +311,31 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" onclick="deactivateyes()"
+                                data-dismiss="modal">Yes</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Activate User Modal -->
+            <div class="modal fade" id="activate-user-modal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" style="cursor: pointer"
+                                data-dismiss="modal">&times;</button>
+                            <h3 class="modal-title" id="activatebut-header">Activate User?</h4>
+                        </div>
+                        <div class="modal-body" id="activate-user-body">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" onclick="Activateyes()"
                                 data-dismiss="modal">Yes</button>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
                         </div>
@@ -425,6 +450,15 @@
         $('#deactivate-user-modal').modal('show');
     });
 
+    $(document).on("click", "#activatebut", function () {
+        //console.log("Deactivate button clicked");
+        UserData = $(this).parent().parent().parent()[0].children;
+        actionbutton = $(this).parent();
+        $('#activate-user-body').html("Are you sure you want to activate " + UserData[1].innerHTML +
+            " ?");
+        $('#activate-user-modal').modal('show');
+    });
+
     function deactivateyes() {
         //console.log("Pressed deactivate yes button");
         console.log(UserData[1].innerHTML);
@@ -449,6 +483,32 @@
             }
         });
     }
+
+    function Activateyes() {
+        //console.log("Pressed deactivate yes button");
+        console.log(UserData[1].innerHTML);
+        console.log(actionbutton[0].childNodes);
+        var request = new XMLHttpRequest();
+        request.open('post', "/admin/userlist/enableuser");
+        request.setRequestHeader("Content-Type", "Application/JSON");
+        request.send(JSON.stringify({
+            "email": UserData[1].innerHTML
+        }));
+        request.addEventListener('load', function () {
+            if (request.status === 200) {
+                var result = JSON.parse(request.responseText);
+                if (result == "0") {
+                    alert("connection problem or email not matched");
+                } else if (result == "1") {
+                    console.log("Changed visibility at backend");
+                    location.reload();
+                } else {
+                    alert(result);
+                }
+            }
+        });
+    }
+
 </script>
 
 </html>
