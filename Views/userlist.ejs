@@ -26,6 +26,7 @@
         margin: 50px;
         border-style: solid;
         border-color: rgb(204, 203, 203);
+        width: 100%;
     }
 
     .dataTables_paginate {
@@ -171,7 +172,7 @@
         <span class="tabtext userdisp" id="refreshbut" style="float:right;cursor: pointer; font-size: 16px"><i
                 class='fas fa-sync-alt' style='font-size:14px;color:white'></i> Refresh</span>
 
-        <table id="usertable" class="usertable display cell-border">
+        <table id="usertable" class="usertable display cell-border" style="width: 100%">
             <thead>
                 <tr>
                     <th class="cell-border">Name</th>
@@ -184,31 +185,7 @@
                 </tr>
             </thead>
             <tbody>
-                <% for(var i=0; i < user.length ; i++) {%>
-                <tr>
-                    <td><%= user[i].name %></td>
-                    <td><%= user[i].email %></td>
-                    <td><%= user[i].phno %></td>
-                    <td><%= user[i].role %></td>
-                    <td><%= user[i].status %></td>
-                    <td><%= user[i].city %></td>
-                    <td class="actioncolumn" id="actionbutton">
-                        <center>
-                            <span class="actionbut emailbut" id="emailbut"><i class='fas fa-envelope'></i></span>
-                            <% if(user[i].role != "superuser") {%>
-                            <span class="actionbut editbut" id="editbut"><i class='fas fa-edit'></i></span>
-                            <% if(user[i].visibility) {%>
-                            <span class="actionbut deactivatebut" id="deactivatebut"><i
-                                    class="fa fa-times-circle"></i></span>
-                            <% } else { %>
-                            <span class="actionbut activatebut" id="activatebut"><i
-                                    class="fa fa-check-circle"></i></span>
-                            <% } %>
-                            <% } %>
-                        </center>
-                    </td>
-                </tr>
-                <% } %>
+
             </tbody>
         </table>
 
@@ -353,7 +330,53 @@
     var allentries;
 
     $(document).ready(function () {
-        table = $('#usertable').DataTable();
+        table = $('#usertable').DataTable({
+            processing: true,
+            serverSide: true,
+            "ajax": {
+                "url": "/admin/userlist/data",
+                "type": "POST",
+            },
+            "columns": [{
+                    "data": "name"
+                },
+                {
+                    "data": "email"
+                },
+                {
+                    "data": "phno"
+                },
+                {
+                    "data": "role"
+                },
+                {
+                    "data": "status"
+                },
+                {
+                    "data": "city"
+                },
+                {
+                    "data": null
+                },
+            ],
+            "columnDefs": [{
+                "targets": -1,
+                "data": null,
+                "render": function (data, type, row, meta) {
+                    var r = row.role;
+                    if (r === "superuser") {
+                        return '<center><span class="actionbut emailbut" id="emailbut"><i class="fas fa-envelope"></i></span></center>';
+                    } else {
+                        var visible = row.visibility;
+                        if (visible) {
+                            return '<center><span class="actionbut emailbut" id="emailbut"><i class="fas fa-envelope"></i></span><span class="actionbut editbut" id="editbut"><i class="fas fa-edit"></i></span><span class="actionbut deactivatebut" id="deactivatebut"><i class="fa fa-times-circle"></i></span></center>';
+                        } else {
+                            return '<center><span class="actionbut emailbut" id="emailbut"><i class="fas fa-envelope"></i></span><span class="actionbut editbut" id="editbut"><i class="fas fa-edit"></i></span><span class="actionbut activatebut" id="activatebut"><i class="fa fa-check-circle"></i></span></center>'
+                        }
+                    }
+                }
+            }]
+        });
         allentries = table.rows().data();
     });
 
@@ -509,7 +532,6 @@
             }
         });
     }
-
 </script>
 
 </html>

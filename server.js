@@ -162,26 +162,42 @@ app.get('/admin/userlist', function (req, res) {
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
-    user.find({}, {
-        "name": 1,
-        "email": 1,
-        "phno": 1,
-        "status": 1,
-        "role": 1,
-        "city": 1,
-        "visibility": 1,
-        "_id": 0
-      })
-      .then(data => {
-        res.render('userlist', {
-          user: data
-        });
-      })
-      .catch(err => {
-        console.error(err)
-        res.send(err);
-      })
+    res.render('userlist');
   }
+});
+
+var count;
+app.post('/admin/userlist/data',function(req,res){
+  if (!req.session.islogin) {
+    res.redirect('/login.html');
+  } else {
+    count = user.countDocuments({},function(error,c){
+      count = c;
+      //console.log( "Number of users:", count );
+    });
+    //console.log(x);
+    //console.log(req.body.length);
+    user.find({}, {
+      "name": 1,
+      "email": 1,
+      "phno": 1,
+      "status": 1,
+      "role": 1,
+      "city": 1,
+      "visibility": 1,
+      "_id": 0
+    }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
+    .then(data => {
+      //console.log(data);
+      res.send({"recordsTotal": count , "recordsFiltered" : count, data });
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(err);
+    })
+
+  }
+
 });
 
 app.post('/admin/userlist/updateuser', function (req, res) {
