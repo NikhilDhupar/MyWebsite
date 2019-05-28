@@ -55,6 +55,43 @@ var productSchema = new mongoose.Schema({
 var user = mongoose.model('userdetails', productSchema);
 mongoose.set('useFindAndModify', false);
 
+var GitHubStrategy = require('passport-github').Strategy;
+const passport = require('passport');
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.use(new GitHubStrategy({
+    clientID: "f48831d54f0b54f76618",
+    clientSecret: "40d6170999720facef735adba2db4d91c3ddb556",
+    callbackURL: "http://localhost:3000/auth/github/callback"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    console.log(profile);
+    user.find({ "email": profile.email }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
+
+app.get('/auth/github', passport.authenticate('github'));
+
+app.get('/auth/github/callback', 
+  passport.authenticate('github', { failureRedirect: '/login' }),
+  function(req, res) {
+    console.log("inside github get");
+    console.log(req.body);
+    // Successful authentication, redirect home.
+    res.send('Github login successful');
+  });
+
 app.get('/', function (req, res) {
   res.redirect('/home')
 })
