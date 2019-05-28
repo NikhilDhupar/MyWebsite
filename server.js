@@ -258,13 +258,37 @@ app.post('/admin/userlist/enableuser', function (req, res) {
     })
 });
 
-app.get('/changePassword',function(req,res){
+app.get('/changePassword', function (req, res) {
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
     res.render('changepassword');
   }
-})
+});
+
+app.post('/changePassword/update', function (req, res) {
+  user.findOneAndUpdate({
+      //search query
+      email: "admin@gmail.com",
+      password: req.body.oldpaswd,
+    }, {
+      // field:values to update
+      password: req.body.newpaswd,
+    }, {
+      new: true, // return updated doc
+      runValidators: true // validate before update
+    })
+    .then(data => {
+      if (data == null) {
+        res.send("0");
+      } else
+        res.send("1");
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(error)
+    })
+});
 
 console.log("Running on port 3000");
 app.listen(3000)
