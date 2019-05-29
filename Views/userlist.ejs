@@ -328,6 +328,8 @@
     var table = "1"
     var names;
     var allentries;
+    let globalstatus = 0;
+    var globalrole = 0;
 
     $(document).ready(function () {
         table = $('#usertable').DataTable({
@@ -336,6 +338,10 @@
             "ajax": {
                 "url": "/admin/userlist/data",
                 "type": "POST",
+                "data": function (d) {
+                    d.querystatus = globalstatus;
+                    d.queryrole= globalrole
+                }
             },
             "columns": [{
                     "data": "name"
@@ -347,7 +353,8 @@
                     "data": "phno"
                 },
                 {
-                    "data": "role"
+                    "data": "role",
+                    "value": "hello"
                 },
                 {
                     "data": "status"
@@ -361,7 +368,7 @@
             ],
             "columnDefs": [{
                 "targets": -1,
-                "data": null,
+
                 "render": function (data, type, row, meta) {
                     var r = row.role;
                     if (r === "superuser") {
@@ -375,7 +382,16 @@
                         }
                     }
                 }
-            }]
+            }],
+            "contentType": "application/json",
+            /*
+            "data": function (d) {
+                return JSON.stringify(d);
+            }
+            */
+            // "data": {
+            //     "user_id": 451
+            // }
         });
         allentries = table.rows().data();
     });
@@ -390,26 +406,25 @@
     var actionbutton;
 
     function printconsole() {
-        //console.log(statustab.selectedIndex);
-        //console.log(roletab.selectedIndex);
-        var status;
-        var role;
+        // console.log(statustab.selectedIndex);
+        // console.log(roletab.selectedIndex);
         if (statustab.selectedIndex == '0')
-            status = "0";
+            globalstatus = "0";
         else if (statustab.selectedIndex == "1")
-            status = "pending";
+            globalstatus = "pending";
         else
-            status = "cofirmed";
+            globalstatus = "confirmed";
 
         if (roletab.selectedIndex == "0")
-            role = "0";
+            globalrole = "0";
         else if (roletab.selectedIndex == "1")
-            role = "admin";
+            globalrole = "admin";
         else if (roletab.selectedIndex == "2")
-            role = "user";
+            globalrole = "user";
         else
-            role = "community builder"
+            globalrole = "community builder"
         // console.log(role);
+        /*
         table.destroy();
         table = $('#usertable').DataTable({
             data: allentries
@@ -417,41 +432,45 @@
         document.getElementById("usertable").style.visibility = "hidden";
         // console.log(status);
         getrows(role, status);
+        */
+        table.draw();
     }
-
-    function getrows(role, status) {
-        if (role == "0" && status == "0") {
-            names = table.rows().data();
-        } else if (role == "0") {
-            names = table.rows(function (idx, data, node) {
-                if (data[4] == status)
-                    return true;
-                else
-                    return false;
-            }).data();
-        } else if (status == "0") {
-            names = table.rows(function (idx, data, node) {
-                if (data[3] == role)
-                    return true;
-                else
-                    return false;
-            }).data();
-        } else {
-            names = table.rows(function (idx, data, node) {
-                if (data[3] == role && data[4] == status)
-                    return true;
-                else
-                    return false;
-            }).data();
+    /*
+        function getrows(role, status) {
+            if (role == "0" && status == "0") {
+                names = table.rows().data();
+            } else if (role == "0") {
+                names = table.rows(function (idx, data, node) {
+                    if (data[4] == status)
+                        return true;
+                    else
+                        return false;
+                }).data();
+            } else if (status == "0") {
+                names = table.rows(function (idx, data, node) {
+                    if (data[3] == role)
+                        return true;
+                    else
+                        return false;
+                }).data();
+            } else {
+                names = table.rows(function (idx, data, node) {
+                    if (data[3] == role && data[4] == status)
+                        return true;
+                    else
+                        return false;
+                }).data();
+            }
+            //console.log(names);
+            table.destroy();
+            //console.log(document.getElementById("usertable"));
+            table = $('#usertable').DataTable({
+                data: names
+            });
+            document.getElementById("usertable").style.visibility = "visible";
         }
-        //console.log(names);
-        table.destroy();
-        //console.log(document.getElementById("usertable"));
-        table = $('#usertable').DataTable({
-            data: names
-        });
-        document.getElementById("usertable").style.visibility = "visible";
-    }
+
+        */
     $(document).on("click", "#editbut", function () {
         UserData = $(this).parent().parent().parent()[0].children;
         //$(".modal-body #bookId").val( UserData );

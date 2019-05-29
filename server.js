@@ -68,15 +68,18 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
+var githubprofile,githubuser;
 passport.use(new GitHubStrategy({
     clientID: "f48831d54f0b54f76618",
     clientSecret: "40d6170999720facef735adba2db4d91c3ddb556",
     callbackURL: "http://localhost:3000/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
-    console.log(profile);
-    user.find({ "email": profile.email }, function (err, user) {
-      return cb(err, user);
+    //console.log(profile);
+    githubprofile = profile;
+    user.find({ "email": profile.email }, function (err, userobj) {
+      githubuser = userobj;
+      return cb(err, userobj);
     });
   }
 ));
@@ -88,6 +91,7 @@ app.get('/auth/github/callback',
   function(req, res) {
     console.log("inside github get");
     console.log(req.body);
+    console.log(githubprofile);
     // Successful authentication, redirect home.
     res.send('Github login successful');
   });
@@ -212,27 +216,75 @@ app.post('/admin/userlist/data',function(req,res){
       count = c;
       //console.log( "Number of users:", count );
     });
-    //console.log(x);
+    // console.log("data sent to server is");
+    // console.log(req.body);
     //console.log(req.body.length);
-    user.find({}, {
-      "name": 1,
-      "email": 1,
-      "phno": 1,
-      "status": 1,
-      "role": 1,
-      "city": 1,
-      "visibility": 1,
-      "_id": 0
-    }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
-    .then(data => {
-      //console.log(data);
-      res.send({"recordsTotal": count , "recordsFiltered" : count, data });
-    })
-    .catch(err => {
-      console.error(err)
-      res.send(err);
-    })
-
+    var querystatus = req.body.querystatus;
+    var queryrole = req.body.queryrole;
+    if(querystatus==0 && queryrole==0)
+    {
+      console.log("both are 0");
+      user.find({}, {
+        "_id": 0
+      }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
+      .then(data => {
+        //console.log(data);
+        res.send({"recordsTotal": count , "recordsFiltered" : count, data });
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
+    }
+    else if(querystatus==0 && queryrole!=0)
+    {
+      user.find({
+        "role" : queryrole,
+      }, {
+        "_id": 0
+      }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
+      .then(data => {
+        //console.log(data);
+        res.send({"recordsTotal": count , "recordsFiltered" : count, data });
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
+    }
+    else if(querystatus!=0 && queryrole==0)
+    {
+      user.find({
+        "status" : querystatus,
+      }, {
+        "_id": 0
+      }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
+      .then(data => {
+        //console.log(data);
+        res.send({"recordsTotal": count , "recordsFiltered" : count, data });
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
+    }
+    else
+    {
+      user.find({
+        "status" : querystatus,
+        "role" : queryrole,
+      }, {
+        "_id": 0
+      }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
+      .then(data => {
+        //console.log(data);
+        res.send({"recordsTotal": count , "recordsFiltered" : count, data });
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
+    }
   }
 
 });
