@@ -384,14 +384,6 @@
                 }
             }],
             "contentType": "application/json",
-            /*
-            "data": function (d) {
-                return JSON.stringify(d);
-            }
-            */
-            // "data": {
-            //     "user_id": 451
-            // }
         });
         allentries = table.rows().data();
     });
@@ -423,54 +415,9 @@
             globalrole = "user";
         else
             globalrole = "community builder"
-        // console.log(role);
-        /*
-        table.destroy();
-        table = $('#usertable').DataTable({
-            data: allentries
-        });
-        document.getElementById("usertable").style.visibility = "hidden";
-        // console.log(status);
-        getrows(role, status);
-        */
         table.draw();
     }
-    /*
-        function getrows(role, status) {
-            if (role == "0" && status == "0") {
-                names = table.rows().data();
-            } else if (role == "0") {
-                names = table.rows(function (idx, data, node) {
-                    if (data[4] == status)
-                        return true;
-                    else
-                        return false;
-                }).data();
-            } else if (status == "0") {
-                names = table.rows(function (idx, data, node) {
-                    if (data[3] == role)
-                        return true;
-                    else
-                        return false;
-                }).data();
-            } else {
-                names = table.rows(function (idx, data, node) {
-                    if (data[3] == role && data[4] == status)
-                        return true;
-                    else
-                        return false;
-                }).data();
-            }
-            //console.log(names);
-            table.destroy();
-            //console.log(document.getElementById("usertable"));
-            table = $('#usertable').DataTable({
-                data: names
-            });
-            document.getElementById("usertable").style.visibility = "visible";
-        }
 
-        */
     $(document).on("click", "#editbut", function () {
         UserData = $(this).parent().parent().parent()[0].children;
         //$(".modal-body #bookId").val( UserData );
@@ -519,7 +466,8 @@
                     alert("connection problem or email not matched");
                 } else if (result == "1") {
                     console.log("Changed visibility at backend");
-                    location.reload();
+                    // location.reload();
+                    table.draw();
                 } else {
                     alert(result);
                 }
@@ -544,7 +492,8 @@
                     alert("connection problem or email not matched");
                 } else if (result == "1") {
                     console.log("Changed visibility at backend");
-                    location.reload();
+                    // location.reload();
+                    table.draw();
                 } else {
                     alert(result);
                 }

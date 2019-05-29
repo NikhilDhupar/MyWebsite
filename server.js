@@ -60,40 +60,50 @@ const passport = require('passport');
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user);
 });
 
-passport.deserializeUser(function(user, done) {
+passport.deserializeUser(function (user, done) {
   done(null, user);
 });
 
-var githubprofile,githubuser;
+var githubprofile, githubuser;
 passport.use(new GitHubStrategy({
     clientID: "f48831d54f0b54f76618",
     clientSecret: "40d6170999720facef735adba2db4d91c3ddb556",
-    callbackURL: "http://localhost:3000/auth/github/callback"
+    callbackURL: "http://localhost:3000/auth/github/callback",
+    session: true,
   },
-  function(accessToken, refreshToken, profile, cb) {
-    //console.log(profile);
-    githubprofile = profile;
-    user.find({ "email": profile.email }, function (err, userobj) {
-      githubuser = userobj;
-      return cb(err, userobj);
-    });
+  function (accessToken, refreshToken, profile, cb) {
+    return cb(null, profile);
   }
 ));
 
 app.get('/auth/github', passport.authenticate('github'));
 
-app.get('/auth/github/callback', 
-  passport.authenticate('github', { failureRedirect: '/login' }),
-  function(req, res) {
-    console.log("inside github get");
-    console.log(req.body);
-    console.log(githubprofile);
-    // Successful authentication, redirect home.
-    res.send('Github login successful');
+app.get('/auth/github/callback',
+  passport.authenticate('github', {
+    failureRedirect: '/login.html'
+  }),
+  function (req, res) {
+    user.update({
+      "email": req.session.passport.user._json.email
+    }, {
+      "name": req.session.passport.user._json.name,
+      "email": req.session.passport.user._json.email,
+      "city": req.session.passport.user._json.location,
+      "visibility": true,
+      "status": "pending",
+      "role": "user",
+    }, {
+      upsert: true
+    });
+    req.session.islogin = 1;
+    req.session.name = req.session.passport.user._json.name;
+    req.session.email = req.session.passport.user._json.email;
+    res.redirect("/home");
+    //res.send('Github login successful');
   });
 
 app.get('/', function (req, res) {
@@ -208,11 +218,11 @@ app.get('/admin/userlist', function (req, res) {
 });
 
 var count;
-app.post('/admin/userlist/data',function(req,res){
+app.post('/admin/userlist/data', function (req, res) {
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
-    count = user.countDocuments({},function(error,c){
+    count = user.countDocuments({}, function (error, c) {
       count = c;
       //console.log( "Number of users:", count );
     });
@@ -221,69 +231,77 @@ app.post('/admin/userlist/data',function(req,res){
     //console.log(req.body.length);
     var querystatus = req.body.querystatus;
     var queryrole = req.body.queryrole;
-    if(querystatus==0 && queryrole==0)
-    {
-      console.log("both are 0");
+    if (querystatus == 0 && queryrole == 0) {
       user.find({}, {
-        "_id": 0
-      }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
-      .then(data => {
-        //console.log(data);
-        res.send({"recordsTotal": count , "recordsFiltered" : count, data });
-      })
-      .catch(err => {
-        console.error(err)
-        res.send(err);
-      })
-    }
-    else if(querystatus==0 && queryrole!=0)
-    {
+          "_id": 0
+        }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
+        .then(data => {
+          //console.log(data);
+          res.send({
+            "recordsTotal": count,
+            "recordsFiltered": count,
+            data
+          });
+        })
+        .catch(err => {
+          console.error(err)
+          res.send(err);
+        })
+    } else if (querystatus == 0 && queryrole != 0) {
       user.find({
-        "role" : queryrole,
-      }, {
-        "_id": 0
-      }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
-      .then(data => {
-        //console.log(data);
-        res.send({"recordsTotal": count , "recordsFiltered" : count, data });
-      })
-      .catch(err => {
-        console.error(err)
-        res.send(err);
-      })
-    }
-    else if(querystatus!=0 && queryrole==0)
-    {
+          "role": queryrole,
+        }, {
+          "_id": 0
+        }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
+        .then(data => {
+          //console.log(data);
+          res.send({
+            "recordsTotal": count,
+            "recordsFiltered": count,
+            data
+          });
+        })
+        .catch(err => {
+          console.error(err)
+          res.send(err);
+        })
+    } else if (querystatus != 0 && queryrole == 0) {
       user.find({
-        "status" : querystatus,
-      }, {
-        "_id": 0
-      }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
-      .then(data => {
-        //console.log(data);
-        res.send({"recordsTotal": count , "recordsFiltered" : count, data });
-      })
-      .catch(err => {
-        console.error(err)
-        res.send(err);
-      })
-    }
-    else
-    {
+          "status": querystatus,
+        }, {
+          "_id": 0
+        }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
+        .then(data => {
+          //console.log(data);
+          res.send({
+            "recordsTotal": count,
+            "recordsFiltered": count,
+            data
+          });
+        })
+        .catch(err => {
+          console.error(err)
+          res.send(err);
+        })
+    } else {
       user.find({
-        "status" : querystatus,
-        "role" : queryrole,
-      }, {
-        "_id": 0
-      }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
-      .then(data => {
-        //console.log(data);
-        res.send({"recordsTotal": count , "recordsFiltered" : count, data });
-      })
-      .catch(err => {
-        console.error(err)
-        res.send(err);
-      })
+          "status": querystatus,
+          "role": queryrole,
+        }, {
+          "_id": 0
+        }).limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
+        .then(data => {
+          //console.log(data);
+          res.send({
+            "recordsTotal": count,
+            "recordsFiltered": count,
+            data
+          });
+        })
+        .catch(err => {
+          console.error(err)
+          res.send(err);
+        })
     }
   }
 
