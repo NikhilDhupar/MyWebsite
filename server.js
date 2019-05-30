@@ -69,7 +69,6 @@ passport.deserializeUser(function (user, done) {
   done(null, user);
 });
 
-var githubprofile, githubuser;
 passport.use(new GitHubStrategy({
     clientID: "f48831d54f0b54f76618",
     clientSecret: "40d6170999720facef735adba2db4d91c3ddb556",
@@ -77,6 +76,7 @@ passport.use(new GitHubStrategy({
     session: true,
   },
   function (accessToken, refreshToken, profile, cb) {
+    console.log(profile);
     return cb(null, profile);
   }
 ));
@@ -88,6 +88,8 @@ app.get('/auth/github/callback',
     failureRedirect: '/login.html'
   }),
   function (req, res) {
+    console.log("githubsignin succesful");
+    
     user.update({
       "email": req.session.passport.user._json.email
     }, {
@@ -115,21 +117,18 @@ app.get('/auth/github/callback',
     }
   });
 
-  var mailOptions = {
-    from: 'nikhildhupar207@gmail.com',
-    to: 'ndhupar@ymail.com',
-    subject: 'Sending Email using Node.js',
-    text: 'That was easy!'
-  };
+  
 
-  function sendemail(){
+  function sendemail(mailOptions){
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
         console.log(error);
         //res.send(error);
+        return 0;
       } else {
         console.log('Email sent: ' + info.response);
         //res.send('Email sent: ' + info.response);
+        return 1;
       }
     });
   }
@@ -219,6 +218,10 @@ app.post('/adduser', function (req, res) {
 })
 
 app.get('/home', function (req, res) {
+  console.log("inside home");
+  console.log(req.session.islogin);
+  console.log(req.session.email);
+  console.log(req.session.name);
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
@@ -261,7 +264,7 @@ app.post('/admin/userlist/data', function (req, res) {
       //console.log( "Number of users:", count );
     });
     // console.log("data sent to server is");
-    //console.log(req.body);
+    console.log(req.body);
     //console.log(req.body.length);
     var querystatus = req.body.querystatus;
     var queryrole = req.body.queryrole;
@@ -340,6 +343,44 @@ app.post('/admin/userlist/data', function (req, res) {
   }
 
 });
+
+app.post('/admin/userlist/email',function(req,res){
+  console.log("email sending ");
+  //console.log(req.body);
+  var mailvalues = { "from": "nikhildhupar207@gmail.com" , "to" : req.body.sendto , "subject": req.body.subject , "text" : req.body.content };
+  console.log(mailvalues);
+  if(sendemail(mailvalues)){
+    res.send("1");
+  }
+  else{
+    res.send("0");
+  }
+});
+
+app.get('/profile',function(req,res){
+  if (!req.session.islogin) {
+    res.redirect('/login.html');
+  } else {
+    user.find({
+        "name": req.session.name,
+        "email": req.session.email
+      })
+      .then(data => {
+        if (data.length != 0) {
+          //console.log(data[0].name);
+          res.render('home', {
+            user: data[0]
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
+  }
+})
 
 app.post('/admin/userlist/updateuser', function (req, res) {
   user.findOneAndUpdate({

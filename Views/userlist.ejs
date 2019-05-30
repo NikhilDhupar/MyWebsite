@@ -72,11 +72,9 @@
 
     .actioncolumn {
         text-align: center;
-
     }
 
     .actionbut {
-
         padding: 5px 8px 5px 8px;
         cursor: pointer;
         margin: 5px;
@@ -147,6 +145,22 @@
         background-color: rgb(81, 255, 0);
     }
 
+    .emailmodal-div {
+        height: 30px;
+        display: grid;
+        grid-template-columns: 1fr 8fr;
+        font-size: 14px;
+        margin: 5px 40px;
+    }
+
+    .emailcontent-input {
+        display: grid;
+        grid-template-columns: 1fr;
+        font-size: 14px;
+        margin: 5px 40px;
+        height: 50px;
+    }
+
     tr {
         height: 45px;
     }
@@ -199,7 +213,7 @@
                         <div class="modal-header">
                             <button type="button" class="close" style="cursor: pointer"
                                 data-dismiss="modal">&times;</button>
-                            <h2 class="modal-title" id="editbut-header">Modal Header</h4>
+                            <h2 class="modal-title" id="editbut-header">Modal Header</h2>
                         </div>
                         <div class="modal-body">
                             <form action="/admin/userlist/updateuser" method="POST">
@@ -322,6 +336,50 @@
             </div>
         </div>
 
+        <div class="container">
+            <!-- Activate User Modal -->
+            <div class="modal fade" id="email-user-modal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" style="cursor: pointer"
+                                data-dismiss="modal">&times;</button>
+                            <h3 class="modal-title" id="email-header">Send Reminder Mail</h4>
+                        </div>
+                        <div class="modal-body" id="email-user-body">
+                                <div class="emailmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>To: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <input id="sendto-useremail" name="sendtoemail" value="email" required
+                                            class="editmodal-input" readonly>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="emailmodal-div">
+                                    <div class="editmodal-label">
+                                        <label>Subject: </label>
+                                    </div>
+                                    <div class="editmodal-input-div">
+                                        <input id="subject-useremail" name="subjectemail" value="" required
+                                            class="editmodal-input">
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="emailcontent-input">
+                                    <input id="content-useremail"></input>
+                                </div>
+                                <br>
+                                <button class="btn btn-default" data-dismiss="modal" id="submitmail">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </body>
 <script>
@@ -340,7 +398,7 @@
                 "type": "POST",
                 "data": function (d) {
                     d.querystatus = globalstatus;
-                    d.queryrole= globalrole
+                    d.queryrole = globalrole
                 }
             },
             "columns": [{
@@ -353,8 +411,7 @@
                     "data": "phno"
                 },
                 {
-                    "data": "role",
-                    "value": "hello"
+                    "data": "role"
                 },
                 {
                     "data": "status"
@@ -385,7 +442,6 @@
             }],
             "contentType": "application/json",
         });
-        allentries = table.rows().data();
     });
 
     var refreshbut = document.getElementById("refreshbut");
@@ -438,6 +494,17 @@
         $('#deactivate-user-body').html("Are you sure you want to deactivate " + UserData[1].innerHTML +
             " ?");
         $('#deactivate-user-modal').modal('show');
+    });
+
+    $(document).on("click", "#emailbut", function () {
+        console.log("Email button clicked");
+        UserData = $(this).parent().parent().parent()[0].children;
+        console.log(UserData[1].innerHTML);
+        //actionbutton = $(this).parent();
+        $('#sendto-useremail').val(UserData[1].innerHTML);
+        $('#subject-useremail').val("Sent By Nikhil");
+        //$('#subject-useremail').html()
+        $('#email-user-modal').modal('show');
     });
 
     $(document).on("click", "#activatebut", function () {
@@ -500,6 +567,33 @@
             }
         });
     }
+
+    $(document).on("click", "#submitmail", function (){
+        UserData = $(this).parent();
+        console.log(UserData[0].children[4].children[0].value);
+        var sendto = UserData[0].children[0].children[1].children[0].value;
+        var subject = UserData[0].children[2].children[1].children[0].value;
+        var content = UserData[0].children[4].children[0].value;
+        var request = new XMLHttpRequest();
+        request.open('post', "/admin/userlist/email");
+            request.setRequestHeader("Content-Type", "Application/JSON")
+            request.send(JSON.stringify({
+                "sendto": sendto,
+                "subject": subject,
+                "content": content
+            }));
+            request.addEventListener('load', function () {
+                if (request.status === 200) {
+                    var result = JSON.parse(request.responseText);
+                    if (result == "0") {
+                        console.log("Error");
+                    }
+                    if (result == "1") {
+                        console.log("successful");
+                    }
+                }
+            });
+    });
 </script>
 
 </html>
