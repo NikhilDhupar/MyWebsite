@@ -2,6 +2,7 @@ var express = require('express')
 var path = require('path')
 var app = express()
 var ejs = require('ejs')
+var nodemailer = require('nodemailer');
 
 var session = require('express-session');
 app.use(session({
@@ -105,6 +106,39 @@ app.get('/auth/github/callback',
     res.redirect("/home");
     //res.send('Github login successful');
   });
+
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'nikhildhupar207@gmail.com', //email
+      pass: 'nikhil@#$%'  //password
+    }
+  });
+
+  var mailOptions = {
+    from: 'nikhildhupar207@gmail.com',
+    to: 'ndhupar@ymail.com',
+    subject: 'Sending Email using Node.js',
+    text: 'That was easy!'
+  };
+
+  function sendemail(){
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        //res.send(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+        //res.send('Email sent: ' + info.response);
+      }
+    });
+  }
+
+  //sendemail();
+
+app.post('/send/email',function(req,res){
+  sendemail(req,res);
+})
 
 app.get('/', function (req, res) {
   res.redirect('/home')
@@ -227,7 +261,7 @@ app.post('/admin/userlist/data', function (req, res) {
       //console.log( "Number of users:", count );
     });
     // console.log("data sent to server is");
-    // console.log(req.body);
+    //console.log(req.body);
     //console.log(req.body.length);
     var querystatus = req.body.querystatus;
     var queryrole = req.body.queryrole;
