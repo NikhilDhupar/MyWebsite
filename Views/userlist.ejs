@@ -337,7 +337,7 @@
         </div>
 
         <div class="container">
-            <!-- Activate User Modal -->
+            <!-- Send email User Modal -->
             <div class="modal fade" id="email-user-modal" role="dialog">
                 <div class="modal-dialog">
 
@@ -349,31 +349,31 @@
                             <h3 class="modal-title" id="email-header">Send Reminder Mail</h4>
                         </div>
                         <div class="modal-body" id="email-user-body">
-                                <div class="emailmodal-div">
-                                    <div class="editmodal-label">
-                                        <label>To: </label>
-                                    </div>
-                                    <div class="editmodal-input-div">
-                                        <input id="sendto-useremail" name="sendtoemail" value="email" required
-                                            class="editmodal-input" readonly>
-                                    </div>
+                            <div class="emailmodal-div">
+                                <div class="editmodal-label">
+                                    <label>To: </label>
                                 </div>
-                                <br>
-                                <div class="emailmodal-div">
-                                    <div class="editmodal-label">
-                                        <label>Subject: </label>
-                                    </div>
-                                    <div class="editmodal-input-div">
-                                        <input id="subject-useremail" name="subjectemail" value="" required
-                                            class="editmodal-input">
-                                    </div>
+                                <div class="editmodal-input-div">
+                                    <input id="sendto-useremail" name="sendtoemail" value="email" required
+                                        class="editmodal-input" readonly>
                                 </div>
-                                <br>
-                                <div class="emailcontent-input">
-                                    <input id="content-useremail"></input>
+                            </div>
+                            <br>
+                            <div class="emailmodal-div">
+                                <div class="editmodal-label">
+                                    <label>Subject: </label>
                                 </div>
-                                <br>
-                                <button class="btn btn-default" data-dismiss="modal" id="submitmail">Send</button>
+                                <div class="editmodal-input-div">
+                                    <input id="subject-useremail" name="subjectemail" value="" required
+                                        class="editmodal-input">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="emailcontent-input">
+                                <input id="content-useremail"></input>
+                            </div>
+                            <br>
+                            <button class="btn btn-default" data-dismiss="modal" id="submitmail">Send</button>
                         </div>
                     </div>
                 </div>
@@ -568,7 +568,7 @@
         });
     }
 
-    $(document).on("click", "#submitmail", function (){
+    $(document).on("click", "#submitmail", function () {
         UserData = $(this).parent();
         console.log(UserData[0].children[4].children[0].value);
         var sendto = UserData[0].children[0].children[1].children[0].value;
@@ -576,23 +576,23 @@
         var content = UserData[0].children[4].children[0].value;
         var request = new XMLHttpRequest();
         request.open('post', "/admin/userlist/email");
-            request.setRequestHeader("Content-Type", "Application/JSON")
-            request.send(JSON.stringify({
-                "sendto": sendto,
-                "subject": subject,
-                "content": content
-            }));
-            request.addEventListener('load', function () {
-                if (request.status === 200) {
-                    var result = JSON.parse(request.responseText);
-                    if (result == "0") {
-                        console.log("Error");
-                    }
-                    if (result == "1") {
-                        console.log("successful");
-                    }
+        request.setRequestHeader("Content-Type", "Application/JSON")
+        request.send(JSON.stringify({
+            "sendto": sendto,
+            "subject": subject,
+            "content": content
+        }));
+        request.addEventListener('load', function () {
+            if (request.status === 200) {
+                var result = JSON.parse(request.responseText);
+                if (result == "0") {
+                    console.log("Error");
                 }
-            });
+                if (result == "1") {
+                    console.log("successful");
+                }
+            }
+        });
     });
 </script>
 
