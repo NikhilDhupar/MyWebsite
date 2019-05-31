@@ -3,6 +3,20 @@ var path = require('path')
 var app = express()
 var ejs = require('ejs')
 var nodemailer = require('nodemailer');
+var multer  = require('multer')
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads/')
+  },
+  filename: function (req, file, cb) {
+    file.fieldname = file.fieldname + req.session.email + '-' + req.session.name + path.extname(file.originalname);
+    console.log(file.fieldname);
+    cb(null, file.fieldname);
+  }
+});
+
+var upload = multer({ storage: storage });
 
 var session = require('express-session');
 app.use(session({
@@ -51,6 +65,7 @@ var productSchema = new mongoose.Schema({
   role: String,
   status: String,
   visibility: Boolean,
+  imagepath: String,
 });
 
 var user = mongoose.model('userdetails', productSchema);
@@ -89,7 +104,7 @@ app.get('/auth/github/callback',
   }),
   function (req, res) {
     console.log("githubsignin succesful");
-    
+
     user.update({
       "email": req.session.passport.user._json.email
     }, {
@@ -109,35 +124,31 @@ app.get('/auth/github/callback',
     //res.send('Github login successful');
   });
 
-  var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'nikhildhupar207@gmail.com', //email
-      pass: 'nikhil@#$%'  //password
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'nikhildhupar207@gmail.com', //email
+    pass: 'nikhil@#$%' //password
+  }
+});
+
+function sendemail(mailOptions) {
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+      //res.send(error);
+      return 0;
+    } else {
+      console.log('Email sent: ' + info.response);
+      //res.send('Email sent: ' + info.response);
+      return 1;
     }
   });
+}
 
-  
-
-  function sendemail(mailOptions){
-    transporter.sendMail(mailOptions, function(error, info){
-      if (error) {
-        console.log(error);
-        //res.send(error);
-        return 0;
-      } else {
-        console.log('Email sent: ' + info.response);
-        //res.send('Email sent: ' + info.response);
-        return 1;
-      }
-    });
-  }
-
-  //sendemail();
-
-app.post('/send/email',function(req,res){
-  sendemail(req,res);
-})
+// app.post('/send/email', function (req, res) {
+//   sendemail(req, res);
+// })
 
 app.get('/', function (req, res) {
   res.redirect('/home')
@@ -218,10 +229,6 @@ app.post('/adduser', function (req, res) {
 })
 
 app.get('/home', function (req, res) {
-  console.log("inside home");
-  console.log(req.session.islogin);
-  console.log(req.session.email);
-  console.log(req.session.name);
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
@@ -341,23 +348,26 @@ app.post('/admin/userlist/data', function (req, res) {
         })
     }
   }
-
 });
 
-app.post('/admin/userlist/email',function(req,res){
+app.post('/admin/userlist/email', function (req, res) {
   console.log("email sending ");
   //console.log(req.body);
-  var mailvalues = { "from": "nikhildhupar207@gmail.com" , "to" : req.body.sendto , "subject": req.body.subject , "text" : req.body.content };
+  var mailvalues = {
+    "from": "nikhildhupar207@gmail.com",
+    "to": req.body.sendto,
+    "subject": req.body.subject,
+    "text": req.body.content
+  };
   console.log(mailvalues);
-  if(sendemail(mailvalues)){
+  if (sendemail(mailvalues)) {
     res.send("1");
-  }
-  else{
+  } else {
     res.send("0");
   }
 });
 
-app.get('/profile',function(req,res){
+app.get('/profile', function (req, res) {
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
@@ -380,7 +390,7 @@ app.get('/profile',function(req,res){
         res.send(err);
       })
   }
-})
+});
 
 app.post('/admin/userlist/updateuser', function (req, res) {
   user.findOneAndUpdate({
@@ -488,5 +498,51 @@ app.post('/changePassword/update', function (req, res) {
     })
 });
 
+app.get('/editprofile',function(req,res){
+  if (!req.session.islogin) {
+    res.redirect('/login.html');
+  } else {
+    user.find({
+        "name": req.session.name,
+        "email": req.session.email
+      })
+      .then(data => {
+        if (data.length != 0) {
+          //console.log(data[0].name);
+          res.render('editprofile', {
+            user: data[0]
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
+  }
+});
+
+app.post('/editprofile/picupload', upload.single('user-'), function (req, res, next) {
+  // req.file is the `avatar` file
+  // req.body will hold the text fields, if there were any
+  //console.log("inside profile upload");
+  user.update({
+    "name": req.session.name,
+    "email": req.session.email,
+  }, {
+    "imagepath": req.file.path,
+  });
+  console.log("path is ");
+  console.log(req.file.path);
+  console.log(req.file);
+  if (!req.file) {
+    const error = new Error('Please upload a file')
+    error.httpStatusCode = 400
+    return next(error)
+  }
+    res.send("stored");
+})
+
 console.log("Running on port 3000");
-app.listen(3000)
+app.listen(4000)
