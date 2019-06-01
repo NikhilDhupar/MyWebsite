@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Profile</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+</head>
+<style>
+    .profilepic {
+        height: 150px;
+        width: 150px;
+        border-width: 3px;
+        border-style: solid;
+        border-color: rgb(216, 214, 214);
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2)
+            /* background-color: bisque; */
+    }
+
+    .main {
+        margin-left: 100px;
+        margin-top: 80px;
+        transition: .5s;
+        display: grid;
+        /* grid-template-rows: 1fr; */
+        padding: 20px;
+        border-width: 2px;
+        border-style: solid;
+        border-color: rgb(216, 214, 214);
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        background-color: rgb(252, 252, 252);
+    }
+</style>
+
+<body style="background-color: rgb(250, 250, 250)">
+    <%- include header.ejs %>
+    <%- include sidebar.ejs %>
+    <div class="main" id="main">
+        <div>
+            <img src="default.png" class="profilepic">
+            <form action="/editprofile/picupload" method="post" enctype="multipart/form-data">
+                <input type="file" id="uploadpic" name="user-" accept="image/*">
+                <input type="submit" value="UploadPhoto"/>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
