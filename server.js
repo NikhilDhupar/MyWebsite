@@ -3,7 +3,7 @@ var path = require('path')
 var app = express()
 var ejs = require('ejs')
 var nodemailer = require('nodemailer');
-var multer  = require('multer')
+var multer = require('multer')
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -16,7 +16,9 @@ var storage = multer.diskStorage({
   }
 });
 
-var upload = multer({ storage: storage });
+var upload = multer({
+  storage: storage
+});
 
 var session = require('express-session');
 app.use(session({
@@ -91,7 +93,7 @@ passport.use(new GitHubStrategy({
     session: true,
   },
   function (accessToken, refreshToken, profile, cb) {
-    console.log(profile);
+    //console.log(profile);
     return cb(null, profile);
   }
 ));
@@ -180,7 +182,24 @@ app.post('/login', function (req, res) {
 
 app.get('/admin/adduser', function (req, res) {
   if (req.session.islogin) {
-    res.render('addusers');
+    user.find({
+        "name": req.session.name,
+        "email": req.session.email
+      })
+      .then(data => {
+        if (data.length != 0) {
+          //console.log(data[0].name);
+          res.render('addusers', {
+            user: data[0]
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
   } else {
     res.redirect('/login.html')
   }
@@ -257,15 +276,32 @@ app.get('/admin/userlist', function (req, res) {
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
-    res.render('userlist');
+    user.find({
+        "name": req.session.name,
+        "email": req.session.email
+      })
+      .then(data => {
+        if (data.length != 0) {
+          //console.log(data[0].name);
+          res.render('userlist', {
+            user: data[0]
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
   }
 });
 
-var count;
 app.post('/admin/userlist/data', function (req, res) {
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
+    var count;
     count = user.countDocuments({}, function (error, c) {
       count = c;
       //console.log( "Number of users:", count );
@@ -470,7 +506,24 @@ app.get('/changePassword', function (req, res) {
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
-    res.render('changepassword');
+    user.find({
+        "name": req.session.name,
+        "email": req.session.email
+      })
+      .then(data => {
+        if (data.length != 0) {
+          //console.log(data[0].name);
+          res.render('changepassword', {
+            user: data[0]
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
   }
 });
 
@@ -498,7 +551,7 @@ app.post('/changePassword/update', function (req, res) {
     })
 });
 
-app.get('/editprofile',function(req,res){
+app.get('/editprofile', function (req, res) {
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
@@ -524,25 +577,29 @@ app.get('/editprofile',function(req,res){
 });
 
 app.post('/editprofile/picupload', upload.single('user-'), function (req, res, next) {
-  // req.file is the `avatar` file
+  // req.file is the image file
   // req.body will hold the text fields, if there were any
   //console.log("inside profile upload");
-  user.update({
+  user.updateOne({
     "name": req.session.name,
     "email": req.session.email,
   }, {
-    "imagepath": req.file.path,
+    "imagepath": req.file.fieldname,
+  }, function (err, success) {
+    if (err) {
+      console.log(error);
+    } else {
+      console.log("SUCCESS - Image succesfully uploaded");
+      console.log(success);
+    }
+    if (!req.file) {
+      const error = new Error('Please400 upload a file')
+      error.httpStatusCode = 400
+      return next(error)
+    }
+    res.redirect("/editprofile");
   });
-  console.log("path is ");
-  console.log(req.file.path);
-  console.log(req.file);
-  if (!req.file) {
-    const error = new Error('Please upload a file')
-    error.httpStatusCode = 400
-    return next(error)
-  }
-    res.send("stored");
 })
 
 console.log("Running on port 3000");
-app.listen(4000)
+app.listen(3000)

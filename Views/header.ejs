@@ -15,17 +15,18 @@
     .label {
         float: right;
         margin: 22px 5px 0px 5px;
-        font-size: 12px;
+        font-size: 14px;
     }
 
-    .nav-text{
+    .nav-text {
         color: white;
     }
+
     .icon {
         margin: 20px;
-        cursor:pointer;
-        float:left;
-        font-size:18px;
+        cursor: pointer;
+        float: left;
+        font-size: 18px;
     }
 
     .navbarpic {
@@ -37,16 +38,27 @@
 </style>
 <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css'
     integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
-    <link rel="stylesheet" href="/bootstrapmodals.css">
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/bootstrapmodals.css">
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
 <body>
     <div class="headerbar">
         <span class="nav-text icon"><b>My website</b></span>
-    <span onclick="openSideNav()" class="icon"><i style='font-size:18px;color:white'
-            class='fas'>&#xf009;</i></span>
-    <span class="label-success"><a href="/profile"><img src="/default.png" class="navbarpic"></a></span>
-    <span class="label label-success nav-text" style="background-color:rgb(6, 201, 6)">&nbsp;&nbsp;Admin&nbsp;&nbsp;</span>
-    <span class="label label-warning nav-text" style="background-color:rgb(252, 184, 58)">&nbsp;&nbsp;SuperAdmin&nbsp;&nbsp;</span>
-</div>
+        <span onclick="openSideNav()" class="icon"><i style='font-size:18px;color:white' class='fas'>&#xf009;</i></span>
+        <% if (user.imagepath) { %>
+            
+        <span class="label-success"><a href="/profile"><img src="/uploads/<%= user.imagepath %>" class="navbarpic"></a></span>
+        <% } else { %>
+        <span class="label-success"><a href="/profile"><img src="/default.png" class="navbarpic"></a></span>
+        <% } %>
+        <span class="label label-success nav-text"
+            style="background-color:rgb(6, 201, 6)">&nbsp;&nbsp;<%= user.name%>&nbsp;&nbsp;</span>
+        <span class="label label-warning nav-text"
+            style="background-color:rgb(252, 184, 58)">&nbsp;&nbsp;<%= user.role%>&nbsp;&nbsp;</span>
+    </div>
 </body>
+<script>
+    //<%= user.name%>
+</script>
+
 </html>

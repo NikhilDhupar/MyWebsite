@@ -61,8 +61,8 @@
 </style>
 
 <body style="background-color: rgb(236, 236, 236)">
-    <%- include header.ejs %>
-    <%- include sidebar.ejs %>
+    <%- include('header.ejs',{user : user}) %>
+  <%- include('sidebar.ejs',{user : user}) %>
     <div class="main" id="main">
         <div style="background-color: rgb(236, 236, 236)"></div>
         <div class="loginwindow">
@@ -105,5 +105,12 @@
         <div style="background-color: rgb(236, 236, 236)"></div>
     </div>
 </body>
+
+<script>
+    document.getElementById("add-user-nav").style.backgroundColor = "blue";
+    document.getElementById("addusersidebutton").style.color = "white";
+    document.getElementById("menu-adduser").style.color = "white";
+    
+</script>
 
 </html>
