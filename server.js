@@ -68,6 +68,9 @@ var productSchema = new mongoose.Schema({
   status: String,
   visibility: Boolean,
   imagepath: String,
+  intrests: String,
+  aboutjourney: String,
+  comExpectations: String,
 });
 
 var user = mongoose.model('userdetails', productSchema);
@@ -599,7 +602,35 @@ app.post('/editprofile/picupload', upload.single('user-'), function (req, res, n
     }
     res.redirect("/editprofile");
   });
-})
+});
+
+app.post('/editprofile', function (req, res) {
+  user.findOneAndUpdate({
+      //search query
+      email: req.body.useremail,
+      name: req.body.fullname,
+    }, {
+      // field:values to update
+      name: req.body.fullname,
+      dob: req.body.dob,
+      gender: req.body.gender,
+      city: req.body.city,
+      intrests: req.body.intrests,
+      aboutjourney: req.body.aboutjourney,
+      comExpectations: req.body.comExpectations,
+    }, {
+      new: true, // return updated doc
+      runValidators: true // validate before update
+    })
+    .then(data => {
+      //console.log(data);
+      res.redirect('/Profile');
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(error)
+    })
+});
 
 console.log("Running on port 3000");
 app.listen(3000)
