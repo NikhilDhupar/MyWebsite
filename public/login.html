@@ -96,7 +96,7 @@
 
                 <div>
                     <div class="form-group" style="margin: 10px">
-                        <input type="text" required name="name" class="form-control" placeholder="Username"
+                        <input type="text" required name="name" class="form-control" placeholder="User Email"
                             id="name"><br>
                     </div>
                     <div class="form-group" style="margin: 10px">
@@ -154,6 +154,9 @@
                     }
                     if (result == "1") {
                         window.location = "/home";
+                    }
+                    if(result == "2"){
+                        window.location = "/community/communitypanel"
                     }
                 }
             });

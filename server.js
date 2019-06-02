@@ -161,7 +161,7 @@ app.get('/', function (req, res) {
 app.post('/login', function (req, res) {
   //console.log(req.body);
   user.find({
-      "name": req.body.name,
+      "email": req.body.name,
       "password": req.body.password
     })
 
@@ -171,7 +171,10 @@ app.post('/login', function (req, res) {
         req.session.name = data[0].name;
         //console.log(data[0].email);
         req.session.email = data[0].email;
+        if(data[0].role=="superuser" || data[0].role=="admin")
         res.send("1");
+        else if(data[0].role=="user" || data[0].role=="community builder")
+        res.send("2")
       } else {
         res.send("0");
       }
@@ -631,6 +634,30 @@ app.post('/editprofile', function (req, res) {
       res.send(error)
     })
 });
+
+app.get('/community/communitypanel',function(req,res){
+  if (!req.session.islogin) {
+    res.redirect('/login.html');
+  } else {
+    user.find({
+      "name": req.session.name,
+      "email": req.session.email
+    })
+    .then(data => {
+      if (data.length != 0) {
+        res.render('communitypannel', {
+          user: data[0]
+        });
+      } else {
+        res.redirect('/login.html');
+      }
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(err);
+    })
+  }
+})
 
 console.log("Running on port 3000");
 app.listen(3000)
