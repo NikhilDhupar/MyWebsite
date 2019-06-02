@@ -64,7 +64,12 @@
   <%- include('sidebar.ejs',{user : user}) %>
   <div class="main" id="main">
     <div>
-      <img src="default.png" class="profilepic">
+        <% if (user.imagepath) { %>
+          <img src="/uploads/<%= user.imagepath %>" class="profilepic">
+          <!-- <span class="label-success"><img src="/uploads/<%= user.imagepath %>" class="navbarpic"></span> -->
+          <% } else { %>
+              <img src="default.png" class="profilepic">
+          <% } %>
       <a href="/editprofile" class="btn btn-primary" style="float:right;" id="editprofilebut">Edit</a>
     </div>
     <div class="contents">

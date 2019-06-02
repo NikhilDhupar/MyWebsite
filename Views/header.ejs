@@ -34,6 +34,7 @@
         width: 40px;
         float: right;
         margin: 10px;
+        border-radius: 50%;
     }
 </style>
 <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css'
@@ -46,7 +47,6 @@
         <span class="nav-text icon"><b>My website</b></span>
         <span onclick="openSideNav()" class="icon"><i style='font-size:18px;color:white' class='fas'>&#xf009;</i></span>
         <% if (user.imagepath) { %>
-            
         <span class="label-success"><a href="/profile"><img src="/uploads/<%= user.imagepath %>" class="navbarpic"></a></span>
         <% } else { %>
         <span class="label-success"><a href="/profile"><img src="/default.png" class="navbarpic"></a></span>
