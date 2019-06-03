@@ -73,6 +73,15 @@ var productSchema = new mongoose.Schema({
   comExpectations: String,
 });
 
+var communitySchema = new mongoose.Schema({
+  name: String,
+  creator: String,
+  rule: String,
+  description: String,
+  imagepath: String,
+});
+
+var community = mongoose.model('commdetails', communitySchema);
 var user = mongoose.model('userdetails', productSchema);
 mongoose.set('useFindAndModify', false);
 
@@ -616,6 +625,7 @@ app.post('/editprofile', function (req, res) {
       // field:values to update
       name: req.body.fullname,
       dob: req.body.dob,
+      phno: req.body.phno,
       gender: req.body.gender,
       city: req.body.city,
       intrests: req.body.intrests,
@@ -657,7 +667,31 @@ app.get('/community/communitypanel',function(req,res){
       res.send(err);
     })
   }
-})
+});
+
+app.get('/community/AddCommunity',function(req,res){
+  if (!req.session.islogin) {
+    res.redirect('/login.html');
+  } else {
+    user.find({
+      "name": req.session.name,
+      "email": req.session.email
+    })
+    .then(data => {
+      if (data.length != 0) {
+        res.render('addcommunity', {
+          user: data[0]
+        });
+      } else {
+        res.redirect('/login.html');
+      }
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(err);
+    })
+  }
+});
 
 console.log("Running on port 3000");
 app.listen(3000)
