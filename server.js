@@ -180,10 +180,10 @@ app.post('/login', function (req, res) {
         req.session.name = data[0].name;
         //console.log(data[0].email);
         req.session.email = data[0].email;
-        if(data[0].role=="superuser" || data[0].role=="admin")
-        res.send("1");
-        else if(data[0].role=="user" || data[0].role=="community builder")
-        res.send("2")
+        if (data[0].role == "superuser" || data[0].role == "admin")
+          res.send("1");
+        else if (data[0].role == "user" || data[0].role == "community builder")
+          res.send("2")
       } else {
         res.send("0");
       }
@@ -645,53 +645,82 @@ app.post('/editprofile', function (req, res) {
     })
 });
 
-app.get('/community/communitypanel',function(req,res){
+app.get('/community/communitypanel', function (req, res) {
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
     user.find({
-      "name": req.session.name,
-      "email": req.session.email
-    })
-    .then(data => {
-      if (data.length != 0) {
-        res.render('communitypannel', {
-          user: data[0]
-        });
-      } else {
-        res.redirect('/login.html');
-      }
-    })
-    .catch(err => {
-      console.error(err)
-      res.send(err);
-    })
+        "name": req.session.name,
+        "email": req.session.email
+      })
+      .then(data => {
+        if (data.length != 0) {
+          res.render('communitypannel', {
+            user: data[0]
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
   }
 });
 
-app.get('/community/AddCommunity',function(req,res){
+app.get('/community/AddCommunity', function (req, res) {
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
     user.find({
-      "name": req.session.name,
-      "email": req.session.email
+        "name": req.session.name,
+        "email": req.session.email
+      })
+      .then(data => {
+        if (data.length != 0) {
+          res.render('addcommunity', {
+            user: data[0]
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
+  }
+});
+
+app.post('/community/AddCommunity', upload.single('community-'), function (req, res) {
+  console.log(req.body);
+  console.log(req.file);
+  community.find({
+      name: req.body.communityName,
     })
     .then(data => {
       if (data.length != 0) {
-        res.render('addcommunity', {
-          user: data[0]
-        });
+        res.send("community name already taken");
       } else {
-        res.redirect('/login.html');
+        let newcomm = new community({
+          name: req.body.communityName,
+          "imagepath": req.file.fieldname,
+          creator: req.session.email,
+          rule: req.body.communityMembershipRule,
+          description: req.body.description,
+        });
+        newcomm.save()
+          .then(data => {
+            res.redirect("/community/communitypanel");
+          })
+          .catch(err => {
+            console.error(err)
+            res.send(error)
+          })
       }
     })
-    .catch(err => {
-      console.error(err)
-      res.send(err);
-    })
-  }
-});
+})
 
 console.log("Running on port 3000");
 app.listen(3000)
