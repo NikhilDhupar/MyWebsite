@@ -158,7 +158,8 @@
                         <div class="modal-header">
                             <button type="button" class="close" style="cursor: pointer"
                                 data-dismiss="modal">&times;</button>
-                            <h2 class="modal-title" id="editbut-header">Community name</h2>
+                            <h2 class="modal-title" id="editbut-header" style="margin: 5px;">Community name</h2>
+                            <h5 id="editbut-creator" style="margin: 2px 5px;font-weight: 200"></h5>
                         </div>
                         <div class="modal-body">
                             <form action="/community/communitylist/updatecommunity" method="POST">
@@ -185,7 +186,10 @@
                                 </div>
                                 <br>
                                 <div class="editmodal-div">
-                                    <div><input name="email" id="update-creatoremail" type="hidden" value=""></div>
+                                    <div style="display: none">
+                                        <input name="email" id="update-creatoremail" type="hidden" value="" readonly>
+                                        <input name="origcommname" id="original-comname" type="hidden" value="" readonly>
+                                    </div>
                                     <div>
                                         <input type="submit" class="btn btn-default" value="Update">
                                     </div>
@@ -269,6 +273,9 @@
             $('#update-commstatus').val("active");
         }
         $('#editbut-header').html("Update " + UserData[0].innerHTML);
+        $('#update-creatoremail').val(UserData[2].innerHTML);
+        $('#original-comname').val(UserData[0].innerHTML);
+        $('#editbut-creator').html("Created On"+ UserData[3].innerHTML);
         $('#update-commname').val(UserData[0].innerHTML);
         $('#edit-commdetails-modal').modal('show');
     });

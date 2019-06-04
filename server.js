@@ -788,6 +788,28 @@ app.post('/community/communitylist/data', function (req, res) {
       console.error(err)
       res.send(err);
     })
+});
+
+app.post('/community/communitylist/updatecommunity',function(req,res){
+  community.findOneAndUpdate({
+    //search query
+    creator: req.body.email,
+    name: req.body.origcommname,
+  }, {
+    // field:values to update
+    name: req.body.commname,
+    status: req.body.status,
+  }, {
+    new: true, // return updated doc
+    runValidators: true // validate before update
+  })
+  .then(data=>{
+    res.redirect('/community/communityList');
+  })
+  .catch(err => {
+    console.error(err)
+    res.send(err);
+  })
 })
 
 console.log("Running on port 3000");
