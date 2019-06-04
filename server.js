@@ -706,13 +706,10 @@ app.post('/community/AddCommunity', upload.single('community-'), function (req, 
         res.send("community name already taken");
       } else {
         var imgpath;
-        if(req.file)
-        {
-          imgpath=req.file.fieldname;
-        }
-        else
-        {
-          imgpath="defaultcommunitypic.jpg"
+        if (req.file) {
+          imgpath = req.file.fieldname;
+        } else {
+          imgpath = "defaultcommunitypic.jpg"
         }
         var d = new Date();
         var dat = d.toDateString();
@@ -738,17 +735,17 @@ app.post('/community/AddCommunity', upload.single('community-'), function (req, 
     })
 });
 
-app.post('/community/communitypannel/mycreated',function(req,res){
+app.post('/community/communitypannel/mycreated', function (req, res) {
   community.find({
-    creator: req.session.email,
-  })
-  .then(data=>{
-    console.log(data);
-    res.send(data);
-  })
+      creator: req.session.email,
+    })
+    .then(data => {
+      console.log(data);
+      res.send(data);
+    })
 });
 
-app.get('/community/communityList',function(req,res){
+app.get('/community/communityList', function (req, res) {
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
@@ -772,13 +769,13 @@ app.get('/community/communityList',function(req,res){
   }
 });
 
-app.post('/community/communitylist/data',function(req,res){
+app.post('/community/communitylist/data', function (req, res) {
   var count;
-    count = community.countDocuments({}, function (error, c) {
-      count = c;
-      //console.log( "Number of users:", count );
-    });
-    community.find().limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
+  count = community.countDocuments({}, function (error, c) {
+    count = c;
+    //console.log( "Number of users:", count );
+  });
+  community.find().limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
     .then(data => {
       //console.log(data);
       res.send({
