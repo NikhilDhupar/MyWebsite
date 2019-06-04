@@ -79,6 +79,8 @@ var communitySchema = new mongoose.Schema({
   rule: String,
   description: String,
   imagepath: String,
+  status: String,
+  createdate: String,
 });
 
 var community = mongoose.model('commdetails', communitySchema);
@@ -703,12 +705,26 @@ app.post('/community/AddCommunity', upload.single('community-'), function (req, 
       if (data.length != 0) {
         res.send("community name already taken");
       } else {
+        var imgpath;
+        if(req.file)
+        {
+          imgpath=req.file.fieldname;
+        }
+        else
+        {
+          imgpath="defaultcommunitypic.jpg"
+        }
+        var d = new Date();
+        var dat = d.toDateString();
+        console.log(dat);
         let newcomm = new community({
           name: req.body.communityName,
-          "imagepath": req.file.fieldname,
+          "imagepath": imgpath,
           creator: req.session.email,
           rule: req.body.communityMembershipRule,
           description: req.body.description,
+          status: "deactive",
+          createdate: dat,
         });
         newcomm.save()
           .then(data => {
@@ -719,6 +735,61 @@ app.post('/community/AddCommunity', upload.single('community-'), function (req, 
             res.send(error)
           })
       }
+    })
+});
+
+app.post('/community/communitypannel/mycreated',function(req,res){
+  community.find({
+    creator: req.session.email,
+  })
+  .then(data=>{
+    console.log(data);
+    res.send(data);
+  })
+});
+
+app.get('/community/communityList',function(req,res){
+  if (!req.session.islogin) {
+    res.redirect('/login.html');
+  } else {
+    user.find({
+        "name": req.session.name,
+        "email": req.session.email
+      })
+      .then(data => {
+        if (data.length != 0) {
+          res.render('admincommunitylist', {
+            user: data[0]
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
+  }
+});
+
+app.post('/community/communitylist/data',function(req,res){
+  var count;
+    count = community.countDocuments({}, function (error, c) {
+      count = c;
+      //console.log( "Number of users:", count );
+    });
+    community.find().limit(parseInt(req.body.length)).skip(parseInt(req.body.start))
+    .then(data => {
+      //console.log(data);
+      res.send({
+        "recordsTotal": count,
+        "recordsFiltered": count,
+        data
+      });
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(err);
     })
 })
 
