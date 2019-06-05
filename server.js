@@ -81,6 +81,8 @@ var communitySchema = new mongoose.Schema({
   imagepath: String,
   status: String,
   createdate: String,
+  requestspending: Array,
+  memberusers: Array,
 });
 
 var community = mongoose.model('commdetails', communitySchema);
@@ -221,6 +223,7 @@ app.get('/admin/adduser', function (req, res) {
     res.redirect('/login.html')
   }
 })
+
 app.post('/adduser', function (req, res) {
   //console.log(req.body);
   //checking if email is already registered or not
@@ -720,8 +723,10 @@ app.post('/community/AddCommunity', upload.single('community-'), function (req, 
           creator: req.session.email,
           rule: req.body.communityMembershipRule,
           description: req.body.description,
+          memberusers : [req.session.email] ,
           status: "deactive",
           createdate: dat,
+          
         });
         newcomm.save()
           .then(data => {
@@ -735,11 +740,35 @@ app.post('/community/AddCommunity', upload.single('community-'), function (req, 
     })
 });
 
+function addmembers(data)
+{
+  console.log("Add creators page\n\n");
+  console.log(data);
+  community.findOneAndUpdate({
+    creator: data.creator,
+  },{
+    $push: {memberusers: data.creator}
+  },{
+    new: true, // return updated doc
+    runValidators: true // validate before update
+  })
+  .then(data => {
+    console.log(data.memberusers);
+    console.log("\n\nSuccesful\n\n");
+    //res.redirect('/Profile');
+  })
+  .catch(err => {
+    console.error(err)
+    //res.send(error)
+  })
+}
+
 app.post('/community/communitypannel/mycreated', function (req, res) {
   community.find({
       creator: req.session.email,
     })
     .then(data => {
+      console.log("inside mycreated");
       console.log(data);
       res.send(data);
     })
@@ -810,7 +839,60 @@ app.post('/community/communitylist/updatecommunity',function(req,res){
     console.error(err)
     res.send(err);
   })
-})
+});
+
+app.get('/community/list',function(req,res){
+  if (req.session.islogin) {
+    user.find({
+        "name": req.session.name,
+        "email": req.session.email
+      })
+      .then(data => {
+        if (data.length != 0) {
+          res.render('communitysearchlist', {
+            user: data[0]
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        res.send(err);
+      })
+  } else {
+    res.redirect('/login.html')
+  }
+});
+
+app.post('/community/communitypannel/mysearch',function(req,res){
+  community.find({
+    "creator": {$nin: req.session.email}
+  })
+  .then(data=>{
+    res.send(data);
+  })
+  .catch(err => {
+    console.error(err)
+    res.send(err);
+  })
+});
+
+app.post('/community/communitypannel/iampartof',function(req,res){
+  community.find({
+    "memberusers": {$in: req.session.email},
+    "creator": {$ne: req.session.email}
+  })
+  .then(data=>{
+    console.log("inside iampartof");
+    console.log(data);
+    res.send(data);
+  })
+  .catch(err => {
+    console.error(err)
+    res.send(err);
+  })
+});
 
 console.log("Running on port 3000");
 app.listen(3000)
