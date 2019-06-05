@@ -253,6 +253,16 @@ app.post('/adduser', function (req, res) {
             req.session.islogin = 1;
             req.session.name = req.body.name;
             req.session.email = req.body.email;
+            var content = "You have been succesfully added to My website.\n"
+            content += "This email can be used to login and Password is " + data.password;
+            content += "We are happy to have you !!!";
+            var mailvalues = {
+              "from": "nikhildhupar207@gmail.com",
+              "to": req.session.email,
+              "subject": "Added to My Website",
+              "text": content,
+            };
+            sendemail(mailvalues);
             res.redirect("/home");
           })
           .catch(err => {
@@ -723,13 +733,22 @@ app.post('/community/AddCommunity', upload.single('community-'), function (req, 
           creator: req.session.email,
           rule: req.body.communityMembershipRule,
           description: req.body.description,
-          memberusers : [req.session.email] ,
+          memberusers: [req.session.email],
           status: "deactive",
           createdate: dat,
-          
+
         });
         newcomm.save()
           .then(data => {
+            var content = "Hello " + req.session.name + "\n";
+            content += "You new community has been sent to admin for verification."
+            var mailvalues = {
+              "from": "nikhildhupar207@gmail.com",
+              "to": req.session.email,
+              "subject": "Adding Your New Community",
+              "text": content,
+            };
+            sendemail(mailvalues);
             res.redirect("/community/communitypanel");
           })
           .catch(err => {
@@ -797,34 +816,36 @@ app.post('/community/communitylist/data', function (req, res) {
     })
 });
 
-app.post('/community/communitylist/updatecommunity',function(req,res){
+app.post('/community/communitylist/updatecommunity', function (req, res) {
   community.findOneAndUpdate({
-    //search query
-    creator: req.body.email,
-    name: req.body.origcommname,
-  }, {
-    // field:values to update
-    name: req.body.commname,
-    status: req.body.status,
-  }, {
-    new: true, // return updated doc
-    runValidators: true // validate before update
-  })
-  .then(data=>{
-    res.redirect('/community/communityList');
-  })
-  .catch(err => {
-    console.error(err)
-    res.send(err);
-  })
+      //search query
+      creator: req.body.email,
+      name: req.body.origcommname,
+    }, {
+      // field:values to update
+      name: req.body.commname,
+      status: req.body.status,
+    }, {
+      new: true, // return updated doc
+      runValidators: true // validate before update
+    })
+    .then(data => {
+      res.redirect('/community/communityList');
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(err);
+    })
 });
 
-app.get('/community/list',function(req,res){
+app.get('/community/list', function (req, res) {
   if (req.session.islogin) {
     user.find({
         "name": req.session.name,
         "email": req.session.email
-      }).sort({"name":1})
+      }).sort({
+        "name": 1
+      })
       .then(data => {
         if (data.length != 0) {
           res.render('communitysearchlist', {
@@ -843,101 +864,139 @@ app.get('/community/list',function(req,res){
   }
 });
 
-app.post('/community/communitypannel/mysearch',function(req,res){
+app.post('/community/communitypannel/mysearch', function (req, res) {
   community.find({
-    "creator": {$ne: req.session.email},
-    "memberusers": {$ne: req.session.email},
-    "requestspending": {$ne: req.session.email},
-  }).sort({"name":1})
-  .then(data=>{
-    res.send(data);
-  })
-  .catch(err => {
-    console.error(err)
-    res.send(err);
-  })
+      "creator": {
+        $ne: req.session.email
+      },
+      "memberusers": {
+        $ne: req.session.email
+      },
+      "requestspending": {
+        $ne: req.session.email
+      },
+    }).sort({
+      "name": 1
+    })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(err);
+    })
 });
 
-app.post('/community/communitypannel/iampartof',function(req,res){
+app.post('/community/communitypannel/iampartof', function (req, res) {
   community.find({
-    "memberusers": {$eq: req.session.email},
-    "requestspending": {$ne: req.session.email},
-    "creator": {$ne: req.session.email},
-  }).sort({"name":1})
-  .then(data=>{
-    // console.log("inside iampartof");
-    // console.log(data);
-    res.send(data);
-  })
-  .catch(err => {
-    console.error(err)
-    res.send(err);
-  })
+      "memberusers": {
+        $eq: req.session.email
+      },
+      "requestspending": {
+        $ne: req.session.email
+      },
+      "creator": {
+        $ne: req.session.email
+      },
+    }).sort({
+      "name": 1
+    })
+    .then(data => {
+      // console.log("inside iampartof");
+      // console.log(data);
+      res.send(data);
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(err);
+    })
 });
 
-app.post('/community/communitypannel/joinrequest',function(req,res){
+app.post('/community/communitypannel/joinrequest', function (req, res) {
   //console.log(req.body);
   community.find({
-    "_id": req.body.id,
-  })
-  .then(data=>{
-    console.log("data matched");
-    console.log(data[0]);
-    if(data[0].rule=="direct")
-    {
-      console.log("inside if");
-      addmembers(data[0],req.session.email);
-    }
-    else if(data[0].rule == "permission"){
-      console.log("inside request else\n");
-      addrequests(data[0],req.session.email);
-    }
-    res.send(data);
-  })
-  .catch(err=>{
-    console.error(err)
-    res.send(err);
-  })
+      "_id": req.body.id,
+    })
+    .then(data => {
+      console.log("data matched");
+      console.log(data[0]);
+      if (data[0].rule == "direct") {
+        console.log("inside if");
+        addmembers(data[0], req.session.email);
+      } else if (data[0].rule == "permission") {
+        console.log("inside request else\n");
+        addrequests(data[0], req.session.email);
+      }
+      res.send(data);
+    })
+    .catch(err => {
+      console.error(err)
+      res.send(err);
+    })
 });
 
-function addrequests(data,useremail)
-{
+function addrequests(data, useremail) {
   console.log("\nAdd creators page\n");
   //console.log(data);
   community.findOneAndUpdate({
-    _id: data._id,
-  },{
-    $push: {requestspending: useremail}
-  },{
-    new: true, // return updated doc
-    runValidators: true // validate before update
-  },function(err,out){
-    console.log(out);
-    console.log("\n\nSuccesful\n\n");
-  })
+      _id: data._id,
+    }, {
+      $push: {
+        requestspending: useremail
+      }
+    }, {
+      new: true, // return updated doc
+      runValidators: true // validate before update
+    })
+    .then(data => {
+      console.log(data);
+      var content = "Your request to join community-" + data.name + " has been received. You will be notified as soon as community owner takes action on your request";
+      var mailvalues = {
+        "from": "nikhildhupar207@gmail.com",
+        "to": req.session.email,
+        "subject": "Request received to join Community",
+        "text": content,
+      };
+      sendemail(mailvalues);
+      console.log("\n\nSuccesful\n\n");
+      //res.redirect('/Profile');
+    })
+    .catch(err => {
+      console.error(err)
+      //res.send(error)
+    })
 }
 
-function addmembers(data,useremail)
-{
+function addmembers(data, useremail) {
   console.log("\nAdd creators page\n");
   //console.log(data);
   community.findOneAndUpdate({
-    _id: data._id,
-  },{
-    $push: {memberusers: useremail}
-  },{
-    new: true, // return updated doc
-    runValidators: true // validate before update
-  })
-  .then(data => {
-    console.log(data);
-    console.log("\n\nSuccesful\n\n");
-    //res.redirect('/Profile');
-  })
-  .catch(err => {
-    console.error(err)
-    //res.send(error)
-  })
+      _id: data._id,
+    }, {
+      $push: {
+        memberusers: useremail
+      }
+    }, {
+      new: true, // return updated doc
+      runValidators: true // validate before update
+    })
+    .then(data => {
+      console.log(data);
+      var content = "You have been succesfully added to community " + data.name;
+      var mailvalues = {
+        "from": "nikhildhupar207@gmail.com",
+        "to": req.session.email,
+        "subject": "Added to Community",
+        "text": content,
+      };
+      sendemail(mailvalues);
+      console.log("\n\nSuccesful\n\n");
+      //res.redirect('/Profile');
+    })
+    .catch(err => {
+      console.error(err)
+      //res.send(error)
+    })
 }
 
 /*
