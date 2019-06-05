@@ -9,7 +9,7 @@
     .community-header-top {
         background-color: rgb(72, 187, 223);
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 4fr 1fr 3fr;
     }
 
     .col-sm-10,
@@ -66,7 +66,7 @@
         border-bottom: 2px solid transparent;
         border-color: #CCCCCC;
         display: grid;
-        grid-template-columns: 1fr 12fr;
+        grid-template-columns: 1fr 11fr 1fr;
     }
 
     .community-panel-btn {
@@ -119,7 +119,7 @@
             </div>
         </div>
         <div class="panel panel-default allSidesSoft community-panel-main-div" id="comm-notjoined">
-            
+
         </div>
     </div>
 </body>
@@ -133,12 +133,13 @@
         if (request.status === 200) {
             var result = JSON.parse(request.responseText);
             for (var i in result) {
-                console.log(result[i]);
+                //console.log(result[i]);
                 var divhead = document.createElement("div");
                 divhead.setAttribute("class", "community-list-item");
                 var imagediv = document.createElement("div");
                 imagediv.setAttribute("class", "community-list-image");
-                imagediv.innerHTML = "<a href='/community/discussion/"+result[i]._id+"'><img src='/uploads/" + result[i].imagepath + "' class='cpic'></a>";
+                imagediv.innerHTML = "<a href='/community/discussion/" + result[i]._id +
+                    "'><img src='/uploads/" + result[i].imagepath + "' class='cpic'></a>";
                 divhead.appendChild(imagediv);
                 var contentdiv = document.createElement("div");
                 contentdiv.setAttribute("class", "community-list-content");
@@ -147,10 +148,38 @@
                     result[i]._id + "'>" + result[i].name + "</p></div>"
                 contentdiv.innerHTML = code;
                 divhead.appendChild(contentdiv);
+                var joinbut = document.createElement("div");
+                if (result[i].rule == "permission") {
+                    joinbut.innerHTML =
+                        '<div><button class="btn btn-primary btn-sm pull-right" id="permissionjoinbtn" onclick="joinbutpress(`'+
+                        result[i]._id + '`)">Ask To Join</button></div>'
+                } else {
+                    joinbut.innerHTML =
+                        '<div><button class="btn btn-primary btn-sm pull-right" id="joinbtn" onclick="joinbutpress(`' +
+                        result[i]._id + '`)">Join</button></div>'
+                }
+                divhead.appendChild(joinbut);
                 content.appendChild(divhead);
             }
-           console.log(result);
+            console.log(result);
         }
     });
+
+    function joinbutpress(id) {
+        var requests = new XMLHttpRequest();
+        requests.open('post', "/community/communitypannel/joinrequest");
+        requests.setRequestHeader("Content-Type", "Application/JSON")
+        requests.send(JSON.stringify({
+            "id": id,
+        }));
+        requests.addEventListener('load', function () {
+            if (requests.status === 200) {
+                var results = JSON.parse(requests.responseText);
+                console.log(results);
+                location.reload();
+            }
+        });
+    }
 </script>
+
 </html>
