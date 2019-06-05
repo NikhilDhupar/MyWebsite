@@ -204,6 +204,38 @@
             </div>
         </div>
 
+        <div class="container">
+                <!-- Edit User Modal -->
+                <div class="modal fade" id="info-commdetails-modal" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" style="cursor: pointer"
+                                    data-dismiss="modal">&times;</button>
+                                    <span id="info-pic-space"><img id="info-modal-pic" src="" class="cpic"></span>
+                                <span class="modal-title" id="editbut-header" style="margin: 5px;">Community name</span>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="editmodal-div">
+                                        <div class="editmodal-label">
+                                            <label> Community Description: </label>
+                                        </div>
+                                        <div class="editmodal-input-div">
+                                            <input id="update-description" name="commname" value="" required
+                                                class="editmodal-input">
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="button" class="btn btn-default" data-dismiss="modal" value="Close">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
 
     </div>
 </body>
@@ -254,7 +286,7 @@
             }, {
                 "targets": -2,
                 "render": function (data, type, row, meta) {
-                    return '<center><span class="actionbut editbut" id="editbut"><i class="fas fa-edit"></i></span></center>'
+                    return '<center><span class="actionbut editbut" id="editbut"><i class="fas fa-edit"></i></span><span class="actionbut" id="infobut" style="background-color: rgb(47, 47, 94);color: #fff"><i class="fa fa-info"></i></span></center>'
                 }
             }],
             "contentType": "application/json",
@@ -263,7 +295,6 @@
 
     $(document).on("click", "#editbut", function () {
         var UserData = $(this).parent().parent().parent()[0].children;
-        console.log(UserData);
         var value = UserData[5].children[0].childNodes[0].classList[1];
         if(value=="listing-deactive")
         {
@@ -279,4 +310,16 @@
         $('#update-commname').val(UserData[0].innerHTML);
         $('#edit-commdetails-modal').modal('show');
     });
+
+    $(document).on("click", "#infobut", function () {
+        var UserData = $(this).parent().parent().parent()[0].children;
+        console.log(UserData);
+        $('#editbut-header').html(UserData[0].innerHTML);
+        $('#update-creatoremail').val(UserData[2].innerHTML);
+        $('#original-comname').val(UserData[0].innerHTML);
+        $('#editbut-creator').html("Created On"+ UserData[3].innerHTML);
+        $('#update-description').val(UserData[0].innerHTML);
+        $('#info-commdetails-modal').modal('show');
+    });
+
 </script>

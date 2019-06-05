@@ -64,7 +64,7 @@
         border-bottom: 2px solid transparent;
         border-color: #CCCCCC;
         display: grid;
-        grid-template-columns: 1fr 12fr;
+        grid-template-columns: 1fr 11fr 1fr;
     }
 
     .community-panel-btn {
@@ -114,7 +114,7 @@
         </div>
         <div class="panel panel-default allSidesSoft community-panel-main-div">
             <div class="panel-heading community-panel-heading">
-                <div class="cummunityhead"><span style="margin-right: 80%">My Communities</span><span>
+                <div class="cummunityhead"><span style="margin-right: 60%">My Communities</span><span>
                         <a href="/community/AddCommunity" class="btn btn-info community-panel-btn">Create</a></span>
                 </div>
             </div>
@@ -134,12 +134,13 @@
         if (request.status === 200) {
             var result = JSON.parse(request.responseText);
             for (var i in result) {
-                console.log(result[i]);
+                // console.log(result[i]);
                 var divhead = document.createElement("div");
                 divhead.setAttribute("class", "community-list-item");
                 var imagediv = document.createElement("div");
                 imagediv.setAttribute("class", "community-list-image");
-                imagediv.innerHTML = "<a href='/community/discussion/"+result[i]._id+"'><img src='/uploads/" + result[i].imagepath + "' class='cpic'></a>";
+                imagediv.innerHTML = "<a href='/community/discussion/" + result[i]._id +
+                    "'><img src='/uploads/" + result[i].imagepath + "' class='cpic'></a>";
                 divhead.appendChild(imagediv);
                 var contentdiv = document.createElement("div");
                 contentdiv.setAttribute("class", "community-list-content");
@@ -148,10 +149,50 @@
                     result[i]._id + "'>" + result[i].name + "</p></div>"
                 contentdiv.innerHTML = code;
                 divhead.appendChild(contentdiv);
+                var settingsdiv = document.createElement("div");
+                settingsdiv.setAttribute("class", "col-sm-1 col-xs-2");
+                settingsdiv.setAttribute("style", "padding:0");
+                settingsdiv.innerHTML = "<a class='community-short-btn' href=/community/manageCommunity/" +
+                    result[i]._id +
+                    "' style='float:rignt'><label class='label label-success' style='cursor:pointer !important;''><i class='fa fa-cogs'></i></label></a>"
+                divhead.appendChild(settingsdiv);
                 content.appendChild(divhead);
             }
         }
+        callrequest1();
     });
+
+    function callrequest1() {
+        var request1 = new XMLHttpRequest();
+        request1.open('post', "/community/communitypannel/iampartof");
+        request1.setRequestHeader("Content-Type", "Application/JSON")
+        request1.send();
+        request1.addEventListener('load', function () {
+            if (request1.status === 200) {
+                var result = JSON.parse(request1.responseText);
+                for (var i in result) {
+                    // console.log(result[i]);
+                    var divhead = document.createElement("div");
+                    divhead.setAttribute("class", "community-list-item");
+                    var imagediv = document.createElement("div");
+                    imagediv.setAttribute("class", "community-list-image");
+                    imagediv.innerHTML = "<a href='/community/discussion/" + result[i]._id +
+                        "'><img src='/uploads/" + result[i].imagepath + "' class='cpic'></a>";
+                    divhead.appendChild(imagediv);
+                    var contentdiv = document.createElement("div");
+                    contentdiv.setAttribute("class", "community-list-content");
+                    var code =
+                        "<div class='col-sm-10 col-xs-7' style='padding-top:25px;padding-bottom:5px;overflow:hidden'><p style='margin:0'><a class='comnametxt' href='/community/discussion/" +
+                        result[i]._id + "'>" + result[i].name + "</p></div>"
+                    contentdiv.innerHTML = code;
+                    divhead.appendChild(contentdiv);
+                    var emptydiv = document.createElement("div");
+                    divhead.appendChild(emptydiv);
+                    content.appendChild(divhead);
+                }
+            }
+        });
+    }
 </script>
 
 </html>
