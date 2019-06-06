@@ -999,6 +999,42 @@ function addmembers(data, useremail) {
     })
 }
 
+app.get('/community/discussion/:commid', function (req, res) {
+  if (!req.session.islogin) {
+    res.redirect('/login.html');
+  } else {
+    user.find({
+        "name": req.session.name,
+        "email": req.session.email,
+      }).sort({
+        "name": 1
+      })
+      .then(data => {
+        if (data.length != 0) {
+          res.render('communitydiscussions', {
+            user: data[0],
+            collectionid: req.params.commid,
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+  }
+});
+
+app.post('/community/communitydetails/getcommunity', function (req, res) {
+  community.find({
+      "_id": req.body.commid,
+    })
+    .then(data => {
+      if (data.length != 0) {
+        res.send(data[0]);
+      } else {
+        res.send(404);
+      }
+    })
+});
+
 /*
 app.get('/hello/:no/:jk/:no',(req,res)=>{
   console.log(req.params.no+'  ----'+req.params.jk+'  ----'+req.params.no);

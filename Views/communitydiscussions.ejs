@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Community</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+</head>
+<style>
+    .main {
+        margin-left: 50px;
+        margin-top: 60px;
+        margin-right: 0px;
+        transition: .5s;
+        background-color: rgb(252, 252, 252);
+    }
+
+    .community-header-top {
+        background-color: rgb(72, 187, 223);
+    }
+
+    .community-profile-conatiner{
+        display: grid;
+        grid-template-columns: 1fr 6fr;
+
+    }
+
+    .img-communityprofile-pic {
+        background: rgb(255, 255, 255) !important;
+        height: 100px;
+        width: 100px;
+        z-index: 20;
+        position: absolute;
+        margin-top: -30px;
+        margin-left: 30px;
+        border: 4px solid #fff;
+    }
+
+    .communityprofile-name-pc {
+        overflow: auto;
+        z-index: 1;
+        height: 60px;
+        margin-top: 15px;
+        font-size: 20px;
+        font-family: 'Open Sans', sans-serif;
+        color: #838686;
+        text-transform: capitalize;
+        font-weight: bold;
+    }
+</style>
+
+<body>
+    <%- include('header.ejs',{user : user}) %>
+    <%- include('sidebar.ejs',{user : user}) %>
+    <div class="main" id="main">
+        <div class="community-header-top" style="height:50px;padding-top:6px;">
+        </div>
+        <div class="container community-profile-conatiner">
+            <div class="col-sm-2 col-xs-12 center-mobile pc">
+                <a href="/community/communityprofile/" id="Profile-pic-display-head">
+                    <img src="/uploads/defaultcommunitypic.jpg" class="img-communityprofile-pic allSides"
+                        style="background:#fff" id="profilepic">
+                </a>
+            </div>
+            <div class="col-sm-8 communityprofile-name-pc communityprofile-system">
+                <a href="/community/communityprofile/5cbf18d7f54a481812074358" class="communityprofile-name-pc"
+                    id="Profile-name-display-head">
+                    First Community
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    console.log('<%= collectionid %>');
+    var request = new XMLHttpRequest();
+    request.open('post', "/community/communitydetails/getcommunity");
+    request.setRequestHeader("Content-Type", "Application/JSON");
+    request.send(JSON.stringify({
+        "commid": '<%= collectionid %>',
+    }));
+    request.addEventListener('load', function () {
+        if (request.status === 200) {
+            var result = JSON.parse(request.responseText);
+            console.log(result);
+            var profilelink = "/community/communityprofile/";
+            profilelink += result._id;
+            console.log("profile link becomes - " + profilelink);
+            var imagelink = "/uploads/";
+            imagelink += result.imagepath;
+            console.log("Image link becomes - " + imagelink);
+            document.getElementById("Profile-name-display-head").setAttribute("href", profilelink);
+            document.getElementById("Profile-pic-display-head").setAttribute("href", profilelink);
+            document.getElementById("profilepic").setAttribute("src", imagelink);
+        }
+    });
+</script>
+
+</html>
