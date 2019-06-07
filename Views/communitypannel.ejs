@@ -107,7 +107,7 @@
         </div>
         <div class="panel panel-default allSidesSoft community-panel-main-div">
             <div class="panel-heading community-panel-heading">
-                <div class="cummunityhead"><span style="margin-right: 60%">My Communities</span><span>
+                <div class="cummunityhead"><span style="margin-right: 60%">My Communities</span><span id="createcommbut">
                         <a href="/community/AddCommunity" class="btn btn-info community-panel-btn">Create</a></span>
                 </div>
             </div>
@@ -118,10 +118,19 @@
     </div>
 </body>
 <script>
+    var createcommbut = document.getElementById("createcommbut");
+    //console.log(createcommbut);
+    //console.log('<%= user.role %>');
+    /*
+    if('<%= user.role %>' != "community builder")
+    {
+        createcommbut.style.display="none";
+    }
+    */
     var content = document.getElementById("community-list-data");
     var request = new XMLHttpRequest();
     request.open('post', "/community/communitypannel/mycreated");
-    request.setRequestHeader("Content-Type", "Application/JSON")
+    request.setRequestHeader("Content-Type", "Application/JSON");
     request.send();
     request.addEventListener('load', function () {
         if (request.status === 200) {

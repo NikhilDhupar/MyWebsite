@@ -52,7 +52,7 @@
         top: 20%;
         left: 0;
         z-index: 1000;
-        display: block;
+        display: none;
         float: left;
         min-width: 160px;
         padding: 5px 0;
@@ -87,6 +87,18 @@
         margin-inline-start: 0px;
         margin-inline-end: 0px;
         padding-inline-start: 40px;
+    }
+
+    .manageCommunity-head-btn {
+        width: 80%;
+        color: #6F6E6E;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        padding: 4px;
+        margin-top: 2px;
+        text-decoration: none;
     }
 </style>
 
@@ -154,8 +166,43 @@
             </div>
         </div>
         <center>
-                <hr style="border-top:2px solid #E6E6E6;width:85%;margin-top:0">
+            <hr style="border-top:2px solid #E6E6E6;width:85%;margin-top:0">
         </center>
+        <br><br><br>
+        <div class="col-sm-12 col-xs-12 col-lg-12 col-md-12" style="padding-bottom:5px;border-bottom:1px solid #c4c4c4">
+            <nonlink class="manageCommunity-head-btn" style="cursor: context-menu;">
+                Manage Community
+            </nonlink>
+            <a href="/community/invite/5cbf18d7f54a481812074358" style="float:right;font-weight:600">
+                Invite Users
+            </a>
+            <a class="pc" href="/community/editcommunity/5cbf18d7f54a481812074358"
+                style="float:right;font-weight:600;margin-right:15px">
+                Edit Community
+            </a>
+        </div>
+        <br>
+        <div class="col-sm-12 col-xs-12 col-lg-12 col-md-12" style="padding:10px 0 0 0;">
+            <div class="col-sm-3 manageCommunity-commuity-div" style="padding:0">
+                <div class="panel-body allSidesSoft" style="background:#fff">
+                    <a class="manageCommunity-child-btn manageCommunity-btn-active" onclick="UserList()"
+                        id="UsersShowBtn">Users</a>
+                    <br>
+                    <a class="manageCommunity-child-btn" onclick="AllAdmins()" id="AdminsShowBtn">
+                        Managers
+                    </a>
+                    <br>
+                    <a class="manageCommunity-child-btn" onclick="Requests(0)" id="requestedUserShowBtn">
+                        Requests
+                    </a>
+
+                    <br>
+                    <a class="manageCommunity-child-btn" onclick="Requests(1)" id="invitedUserShowBtn">
+                        Invited Members (3)
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 <script>
@@ -177,11 +224,11 @@
             imagelink += result.imagepath;
             console.log("Image link becomes - " + imagelink);
             var discussionlink = "/community/discussion/";
-            discussionlink+=result._id;
+            discussionlink += result._id;
             var memberslink = "/community/communitymembers/";
-            memberslink+=result._id;
+            memberslink += result._id;
             var managecommunitylink = "/community/managecommunity/";
-            managecommunitylink+=result._id;
+            managecommunitylink += result._id;
             document.getElementById("Profile-name-display-head").setAttribute("href", profilelink);
             document.getElementById("Profile-pic-display-head").setAttribute("href", profilelink);
             document.getElementById("profilepic").setAttribute("src", imagelink);
@@ -189,7 +236,7 @@
             document.getElementById("comm-manage-option-but").setAttribute("href", managecommunitylink);
             document.getElementById("comm-profile-option-but").setAttribute("href", profilelink);
             document.getElementById("comm-members-option-but").setAttribute("href", memberslink);
-           // console.log(menubut);
+            // console.log(menubut);
         }
     });
     /*
@@ -200,7 +247,6 @@
         var dropdown = document.getElementsByClassName("dropdown-menu");
         console.log(dropdown.style.display);
     }
-    
 </script>
 
 </html>

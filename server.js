@@ -1006,8 +1006,6 @@ app.get('/community/discussion/:commid', function (req, res) {
     user.find({
         "name": req.session.name,
         "email": req.session.email,
-      }).sort({
-        "name": 1
       })
       .then(data => {
         if (data.length != 0) {
@@ -1033,6 +1031,69 @@ app.post('/community/communitydetails/getcommunity', function (req, res) {
         res.send(404);
       }
     })
+});
+
+app.get('/community/communityprofile/:commid',function(req,res){
+  if (!req.session.islogin) {
+    res.redirect('/login.html');
+  } else {
+    user.find({
+        "name": req.session.name,
+        "email": req.session.email,
+      })
+      .then(data => {
+        if (data.length != 0) {
+          res.render('communityprofile', {
+            user: data[0],
+            collectionid: req.params.commid,
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+  }
+});
+
+app.get('/community/managecommunity/:commid',function(req,res){
+  if (!req.session.islogin) {
+    res.redirect('/login.html');
+  } else {
+    user.find({
+        "name": req.session.name,
+        "email": req.session.email,
+      })
+      .then(data => {
+        if (data.length != 0) {
+          res.render('managecommunity', {
+            user: data[0],
+            collectionid: req.params.commid,
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+  }
+});
+
+app.get('/community/communitymembers/:commid',function(req,res){
+  if (!req.session.islogin) {
+    res.redirect('/login.html');
+  } else {
+    user.find({
+        "name": req.session.name,
+        "email": req.session.email,
+      })
+      .then(data => {
+        if (data.length != 0) {
+          res.render('communitymembers', {
+            user: data[0],
+            collectionid: req.params.commid,
+          });
+        } else {
+          res.redirect('/login.html');
+        }
+      })
+  }
 });
 
 /*
