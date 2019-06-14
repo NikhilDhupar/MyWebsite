@@ -20,7 +20,7 @@
 
     .community-profile-conatiner {
         display: grid;
-        grid-template-columns: 1fr 6fr 1fr;
+        grid-template-columns: 2fr 6fr 1fr;
 
     }
 
@@ -80,7 +80,6 @@
     }
 
     ul {
-        display: block;
         list-style-type: disc;
         margin-block-start: 1em;
         margin-block-end: 1em;
@@ -112,10 +111,10 @@
             <div class="col-sm-2 col-xs-12 center-mobile" style="padding-top:10px;float:right">
                 <div class="dropdown open">
                     <button class="btn btn-default dropdown-toggle commuity-profile-menu-btn" type="button"
-                        data-toggle="dropdown" aria-expanded="false">
+                        data-toggle="dropdown" aria-expanded="false" onclick="toggledisplay()">
                         <i class="fa fa-bars"></i>
                     </button>
-                    <ul class="dropdown-menu custom-commuity-dropdown dropdown-menu-right" style="margin-top:40px"
+                    <ul class="dropdown-menu custom-commuity-dropdown dropdown-menu-right" style="margin-top:40px; display: none;"
                         id="dropdownmenu">
 
                         <li>
@@ -197,8 +196,15 @@
     console.log(menubut);
     */
     function toggledisplay() {
-        var dropdown = document.getElementsByClassName("dropdown-menu");
-        console.log(dropdown.style.display);
+        var dropdown = document.getElementById("dropdownmenu");
+        if(dropdown.style.display=="none")
+        {
+            dropdown.style.display = "inline";
+        }
+        else
+        {
+            dropdown.style.display = "none";
+        }
     }
     
 </script>

@@ -7,11 +7,11 @@
 </head>
 <style>
     .main {
-        margin-left: 50px;
+        margin-left: 40px;
         margin-top: 60px;
         margin-right: 0px;
         transition: .5s;
-        background-color: rgb(252, 252, 252);
+        background-color: #e6e6e6;
     }
 
     .community-header-top {
@@ -20,8 +20,16 @@
 
     .community-profile-conatiner {
         display: grid;
-        grid-template-columns: 1fr 6fr 1fr;
+        grid-template-columns: 2fr 6fr 1fr;
 
+    }
+
+    col-sm-9,
+    .col-sm-3 {
+        position: relative;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px;
     }
 
     .img-communityprofile-pic {
@@ -80,13 +88,51 @@
     }
 
     ul {
-        display: block;
         list-style-type: disc;
         margin-block-start: 1em;
         margin-block-end: 1em;
         margin-inline-start: 0px;
         margin-inline-end: 0px;
         padding-inline-start: 40px;
+    }
+
+    .panel-body {
+        padding: 15px;
+    }
+
+    .well {
+        min-height: 20px;
+        padding: 19px;
+        margin-bottom: 20px;
+        /* background-color: #f5f5f5; */
+        border: 1px solid #bebebe;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+    }
+
+    .well-sm {
+        padding: 9px;
+        border-radius: 3px;
+    }
+
+    .manageCommunity-btn-active {
+        color: #1C73DD !important;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .manageCommunity-child-btn {
+        width: 80%;
+        color: #848484;
+        font-size: 15px;
+        text-decoration: none;
+        cursor: pointer;
+        padding: 4px;
+        margin-top: 2px;
+        text-decoration: none;
+        font-family: "Helvetica Neue, Helvetica, Arial, sans-serif";
+        font-size: 14px;
     }
 
     .manageCommunity-head-btn {
@@ -100,9 +146,15 @@
         margin-top: 2px;
         text-decoration: none;
     }
+
+    .manageCommunity-commuity-div {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+
+    }
 </style>
 
-<body>
+<body style="background-color: #e6e6e6">
     <%- include('header.ejs',{user : user}) %>
     <%- include('sidebar.ejs',{user : user}) %>
     <div class="main" id="main">
@@ -124,11 +176,11 @@
             <div class="col-sm-2 col-xs-12 center-mobile" style="padding-top:10px;float:right">
                 <div class="dropdown open">
                     <button class="btn btn-default dropdown-toggle commuity-profile-menu-btn" type="button"
-                        data-toggle="dropdown" aria-expanded="false">
+                        data-toggle="dropdown" aria-expanded="false" onclick="toggledisplay()">
                         <i class="fa fa-bars"></i>
                     </button>
-                    <ul class="dropdown-menu custom-commuity-dropdown dropdown-menu-right" style="margin-top:40px"
-                        id="dropdownmenu">
+                    <ul class="dropdown-menu custom-commuity-dropdown dropdown-menu-right"
+                        style="margin-top:40px; display: none;" id="dropdownmenu">
 
                         <li>
                             <a href="/community/discussion/5cbf18d7f54a481812074358"
@@ -137,15 +189,12 @@
                             </a>
                         </li>
 
-
-
                         <li>
                             <a href="/community/managecommunity/5cbf18d7f54a481812074358"
                                 class="community-profile-option-btn" id="comm-manage-option-but">
                                 Manage Community
                             </a>
                         </li>
-
 
                         <li>
                             <a href="/community/communityprofile/5cbf18d7f54a481812074358"
@@ -183,30 +232,39 @@
         </div>
         <br>
         <div class="col-sm-12 col-xs-12 col-lg-12 col-md-12" style="padding:10px 0 0 0;">
-            <div class="col-sm-3 manageCommunity-commuity-div" style="padding:0">
+            <div class="col-sm-3 manageCommunity-commuity-div" style="padding:10px">
                 <div class="panel-body allSidesSoft" style="background:#fff">
                     <a class="manageCommunity-child-btn manageCommunity-btn-active" onclick="UserList()"
-                        id="UsersShowBtn">Users</a>
+                        id="UsersShowBtn">Users<span></span></a>
                     <br>
                     <a class="manageCommunity-child-btn" onclick="AllAdmins()" id="AdminsShowBtn">
-                        Managers
+                        Managers<span></span>
                     </a>
                     <br>
-                    <a class="manageCommunity-child-btn" onclick="Requests(0)" id="requestedUserShowBtn">
-                        Requests
+                    <a class="manageCommunity-child-btn" onclick="Requests()" id="requestedUserShowBtn">
+                        Requests<span></span>
                     </a>
 
                     <br>
-                    <a class="manageCommunity-child-btn" onclick="Requests(1)" id="invitedUserShowBtn">
-                        Invited Members (3)
+                    <a class="manageCommunity-child-btn" onclick="InvitedUsers()" id="invitedUserShowBtn">
+                        Invited Members <span></span>
                     </a>
+                </div>
+                <div class="col-sm-9">
+                    <div id="comlist">
+                        <div class="col-sm-12 allcoms well well-sm" style="margin-top:5px;font-weight:bold" id="">
+                            <center>
+                                <div>No any user</div>
+                            </center>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
 <script>
-    console.log('<%= collectionid %>');
+    //console.log('<%= collectionid %>');
     var request = new XMLHttpRequest();
     request.open('post', "/community/communitydetails/getcommunity");
     request.setRequestHeader("Content-Type", "Application/JSON");
@@ -244,8 +302,27 @@
     console.log(menubut);
     */
     function toggledisplay() {
-        var dropdown = document.getElementsByClassName("dropdown-menu");
-        console.log(dropdown.style.display);
+        var dropdown = document.getElementById("dropdownmenu");
+        if (dropdown.style.display == "none") {
+            dropdown.style.display = "inline";
+        } else {
+            dropdown.style.display = "none"
+        }
+    }
+
+    function Requests() {
+        var request = new XMLHttpRequest();
+        request.open('post', "/community/communitydetails/getPendingRequests");
+        request.setRequestHeader("Content-Type", "Application/JSON");
+        request.send(JSON.stringify({
+            "commid": '<%= collectionid %>',
+        }));
+        request.addEventListener('load', function () {
+            if (request.status === 200) {
+                var result = JSON.parse(request.responseText);
+                console.log(result.length);
+            }
+        })
     }
 </script>
 
