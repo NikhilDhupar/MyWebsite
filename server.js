@@ -83,6 +83,8 @@ var communitySchema = new mongoose.Schema({
   createdate: String,
   requestspending: Array,
   memberusers: Array,
+  invitesSent: Array,
+  commAdmins: Array,
 });
 
 var community = mongoose.model('commdetails', communitySchema);
@@ -103,8 +105,8 @@ passport.deserializeUser(function (user, done) {
 });
 
 passport.use(new GitHubStrategy({
-    clientID: "f48831d54f0b54f76618",
-    clientSecret: "40d6170999720facef735adba2db4d91c3ddb556",
+    clientID: process.env.gitclientID,
+    clientSecret: process.env.gitclientSecret,
     callbackURL: "http://localhost:3000/auth/github/callback",
     session: true,
   },
@@ -145,8 +147,8 @@ app.get('/auth/github/callback',
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'nikhildhupar207@gmail.com', //email
-    pass: 'nikhil@#$%' //password
+    user: process.env.UserEmail, //email
+    pass: process.env.EmailPassword //password
   }
 });
 
@@ -736,7 +738,6 @@ app.post('/community/AddCommunity', upload.single('community-'), function (req, 
           memberusers: [req.session.email],
           status: "deactive",
           createdate: dat,
-
         });
         newcomm.save()
           .then(data => {
@@ -1094,6 +1095,21 @@ app.get('/community/communitymembers/:commid',function(req,res){
         }
       })
   }
+});
+
+app.post('/community/communitydetails/getPendingRequests', function (req, res) {
+  community.find({
+      "_id": req.body.commid,
+    })
+    .then(data => {
+      if (data.length != 0) {
+        let temp = [data[0].creator];
+        temp.push(data[0].requestspending);
+        res.send(temp);
+      } else {
+        res.send(404);
+      }
+    })
 });
 
 /*
