@@ -3,7 +3,7 @@ var path = require('path')
 var app = express()
 var ejs = require('ejs')
 var nodemailer = require('nodemailer');
-var multer = require('multer')
+var multer = require('multer');
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -42,7 +42,7 @@ app.use(express.json());
 
 //Connect with db
 var mongoose = require('mongoose');
-var mongoDB = 'mongodb://localhost/project1';
+var mongoDB = 'mongodb://localhost/projects';
 
 mongoose.connect(mongoDB, {
   useNewUrlParser: true
@@ -87,8 +87,11 @@ var communitySchema = new mongoose.Schema({
   commAdmins: Array,
 });
 
-var community = mongoose.model('commdetails', communitySchema);
-var user = mongoose.model('userdetails', productSchema);
+const dotenv = require('dotenv');
+dotenv.config();
+
+const community = mongoose.model('commdetails', communitySchema);
+const user = mongoose.model('userdetails', productSchema);
 mongoose.set('useFindAndModify', false);
 
 var GitHubStrategy = require('passport-github').Strategy;
@@ -107,11 +110,13 @@ passport.deserializeUser(function (user, done) {
 passport.use(new GitHubStrategy({
     clientID: process.env.gitclientID,
     clientSecret: process.env.gitclientSecret,
-    callbackURL: "http://localhost:3000/auth/github/callback",
+    callbackURL: "https://community.nikhildeveloper.gq/auth/github/callback",
     session: true,
   },
   function (accessToken, refreshToken, profile, cb) {
     //console.log(profile);
+	 // console.log(process.env.gitclientID);
+	 // console.log(process.env.gitclientSecret);
     return cb(null, profile);
   }
 ));
@@ -123,9 +128,9 @@ app.get('/auth/github/callback',
     failureRedirect: '/login.html'
   }),
   function (req, res) {
-    console.log("githubsignin succesful");
+    //console.log("githubsignin succesful");
 
-    user.update({
+    user.updateOne({
       "email": req.session.passport.user._json.email
     }, {
       "name": req.session.passport.user._json.name,
@@ -136,12 +141,22 @@ app.get('/auth/github/callback',
       "role": "user",
     }, {
       upsert: true
+    },function(err,data){
+    	if(err){
+		console.log(err)
+	//console.log("Upsert didn't work");
+	}
+	    else
+	    {
+		  //  console.log("Upsert works");
+	    	//console.log(data);
+	    }
     });
     req.session.islogin = 1;
     req.session.name = req.session.passport.user._json.name;
     req.session.email = req.session.passport.user._json.email;
-    res.redirect("/home");
-    //res.send('Github login successful');
+	  res.redirect("/home");
+	  //res.send('Github login successful');
   });
 
 var transporter = nodemailer.createTransport({
@@ -171,8 +186,14 @@ function sendemail(mailOptions) {
 // })
 
 app.get('/', function (req, res) {
-  res.redirect('/home')
+  console.log("Inside root");
+	res.redirect('/home')
 })
+
+app.get('/server1',function(req,res) {
+	res.redirect('/login.html');
+})
+
 app.post('/login', function (req, res) {
   //console.log(req.body);
   user.find({
@@ -181,6 +202,7 @@ app.post('/login', function (req, res) {
     })
 
     .then(data => {
+	    //console.log(data);
       if (data.length != 0) {
         req.session.islogin = 1;
         req.session.name = data[0].name;
@@ -251,16 +273,14 @@ app.post('/adduser', function (req, res) {
         })
         newuser.save()
           .then(data => {
-            //console.log(data)
-            req.session.islogin = 1;
-            req.session.name = req.body.name;
-            req.session.email = req.body.email;
+		 // console.log("adding new user");
+          //  console.log(data);
             var content = "You have been succesfully added to My website.\n"
             content += "This email can be used to login and Password is " + data.password;
             content += "We are happy to have you !!!";
             var mailvalues = {
               "from": "nikhildhupar207@gmail.com",
-              "to": req.session.email,
+              "to": data.email,
               "subject": "Added to My Website",
               "text": content,
             };
@@ -280,6 +300,7 @@ app.post('/adduser', function (req, res) {
 })
 
 app.get('/home', function (req, res) {
+	//console.log("Inside home");
   if (!req.session.islogin) {
     res.redirect('/login.html');
   } else {
@@ -634,10 +655,12 @@ app.post('/editprofile/picupload', upload.single('user-'), function (req, res, n
 });
 
 app.post('/editprofile', function (req, res) {
+	if (!req.session.islogin) {
+    		res.redirect('/login.html');
+	}
   user.findOneAndUpdate({
       //search query
-      email: req.body.useremail,
-      name: req.body.fullname,
+      email: req.session.email,
     }, {
       // field:values to update
       name: req.body.fullname,
@@ -653,7 +676,7 @@ app.post('/editprofile', function (req, res) {
       runValidators: true // validate before update
     })
     .then(data => {
-      //console.log(data);
+      console.log("response after updating profile \n "+data);
       res.redirect('/Profile');
     })
     .catch(err => {
@@ -1117,5 +1140,5 @@ app.get('/hello/:no/:jk/:no',(req,res)=>{
   console.log(req.params.no+'  ----'+req.params.jk+'  ----'+req.params.no);
   res.send('hello');
 })*/
-console.log("Running on port 3000");
-app.listen(3000)
+console.log("Running on port 4000");
+app.listen(4000)

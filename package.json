@@ -6,6 +6,7 @@
   "dependencies": {
     "alertifyjs": "^1.11.2",
     "datatables.net": "^1.10.19",
+    "dotenv": "^8.2.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "express-session": "^1.16.1",
